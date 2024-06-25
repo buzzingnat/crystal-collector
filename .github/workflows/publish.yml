@@ -28,13 +28,16 @@ jobs:
           sudo apt update
           sudo apt install -y wine-stable
 
-      # Move all the game files into a build/ directory.
-      - name: Install and build the HTML app
+      # Install dependencies for the app
+      - name: Run install
         # use yarn instead of npm for consistency with our lock file
         uses: borales/actions-yarn@v4
-        run: |
-          install
-          build
+        with:
+          cmd: install # will run `yarn install` command
+
+      # Move all the game files into a build/ directory.
+      - name: Run build
+        run: npm run build
 
       # npm run make uses Electron Forge, see package.json above for details.
       # We have to run make three times, once for each platform. This step

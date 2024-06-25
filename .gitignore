@@ -63,3 +63,7 @@ etc/
 
 # osx file
 .DS_Store
+
+# output of generated Electron files
+electron/out
+electron/out-resources
