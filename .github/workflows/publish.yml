@@ -44,8 +44,8 @@ jobs:
         # use yarn instead of npm for consistency with our lock file
         uses: borales/actions-yarn@v4
         with:
-          cmd: install # will run `yarn install` command
-        working-directory: ./electron
+          cmd: install
+          dir: electron # will run `yarn install` command in `electron` subfolder
 
       # npm run make uses Electron Forge, see package.json above for details.
       # We have to run make three times, once for each platform. This step
