@@ -30,13 +30,16 @@ jobs:
 
       # Move all the game files into a build/ directory.
       - name: Install and build the HTML app
+        # use yarn instead of npm for consistency with our lock file
+        uses: borales/actions-yarn@v4
         run: |
-          npm ci
-          npm run build
+          install
+          build
 
       # npm run make uses Electron Forge, see package.json above for details.
       # We have to run make three times, once for each platform. This step
       # generates three directories, corresponding to each platform.
+      # Ubuntu is set as our environment, so platform auto resolves to that.
       # Notice the working-directory is now ./electron!
       - name: Copy HTML app to electron/, and make Electron packages
         run: |
@@ -52,18 +55,18 @@ jobs:
       # environments, you'll need to write your own deploy script.
       # The depot{number}Path parameters correspond to the directories created
       # in the previous step by npm run make.
-      - name: Deploy to Steam
-        uses: game-ci/steam-deploy@v1.1.0
-        with:
-          username: ${{ secrets.STEAM_USERNAME }}
-          password: ${{ secrets.STEAM_PASSWORD }}
-          configVdf: ${{ secrets.STEAM_CONFIG_VDF}}
-          ssfnFileName: ${{ secrets.STEAM_SSFN_FILE_NAME }}
-          ssfnFileContents: ${{ secrets.STEAM_SSFN_FILE_CONTENTS }}
-          appId: your app id goes here
-          buildDescription: ${{ github.ref }}
-          rootPath: electron/out
-          depot1Path: ${{ github.repository }}-darwin-x64
-          depot2Path: ${{ github.repository }}-win32-x64
-          depot3Path: ${{ github.repository }}-linux-x64
-          releaseBranch: prerelease
+      # - name: Deploy to Steam
+      #   uses: game-ci/steam-deploy@v1.1.0
+      #   with:
+      #     username: ${{ secrets.STEAM_USERNAME }}
+      #     password: ${{ secrets.STEAM_PASSWORD }}
+      #     configVdf: ${{ secrets.STEAM_CONFIG_VDF}}
+      #     ssfnFileName: ${{ secrets.STEAM_SSFN_FILE_NAME }}
+      #     ssfnFileContents: ${{ secrets.STEAM_SSFN_FILE_CONTENTS }}
+      #     appId: your app id goes here
+      #     buildDescription: ${{ github.ref }}
+      #     rootPath: electron/out
+      #     depot1Path: ${{ github.repository }}-darwin-x64
+      #     depot2Path: ${{ github.repository }}-win32-x64
+      #     depot3Path: ${{ github.repository }}-linux-x64
+      #     releaseBranch: prerelease
