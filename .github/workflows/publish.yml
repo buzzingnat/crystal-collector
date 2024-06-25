@@ -1,0 +1,69 @@
+# from: https://trashmoon.com/blog/2022/automating-steam-releases-for-html-games-with-electron-forge-and-github-actions/
+name: Build/release
+
+# Run this workflow whenever a tag that starts with v is pushed to github.
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v1
+
+      - name: Install Node.js & NPM
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.2.0'
+
+      # Wine is required in order to generate an Electron build for Windows from
+      # an Ubuntu machine.
+      - name: Install Wine
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt update
+          sudo apt install -y wine-stable
+
+      # Move all the game files into a build/ directory.
+      - name: Install and build the HTML app
+        run: |
+          npm ci
+          npm run build
+
+      # npm run make uses Electron Forge, see package.json above for details.
+      # We have to run make three times, once for each platform. This step
+      # generates three directories, corresponding to each platform.
+      # Notice the working-directory is now ./electron!
+      - name: Copy HTML app to electron/, and make Electron packages
+        run: |
+          node ../scripts/prepare-electron.js
+          npm run make
+          npm run make -- --platform=win32
+          npm run make -- --platform=darwin
+        working-directory: ./electron
+
+      # View this action's source code and documentation at
+      # https://github.com/game-ci/steam-deploy. Note that this action only
+      # works in ubuntu environments. If you want to run in Mac OS or Windows
+      # environments, you'll need to write your own deploy script.
+      # The depot{number}Path parameters correspond to the directories created
+      # in the previous step by npm run make.
+      - name: Deploy to Steam
+        uses: game-ci/steam-deploy@v1.1.0
+        with:
+          username: ${{ secrets.STEAM_USERNAME }}
+          password: ${{ secrets.STEAM_PASSWORD }}
+          configVdf: ${{ secrets.STEAM_CONFIG_VDF}}
+          ssfnFileName: ${{ secrets.STEAM_SSFN_FILE_NAME }}
+          ssfnFileContents: ${{ secrets.STEAM_SSFN_FILE_CONTENTS }}
+          appId: your app id goes here
+          buildDescription: ${{ github.ref }}
+          rootPath: electron/out
+          depot1Path: ${{ github.repository }}-darwin-x64
+          depot2Path: ${{ github.repository }}-win32-x64
+          depot3Path: ${{ github.repository }}-linux-x64
+          releaseBranch: prerelease
