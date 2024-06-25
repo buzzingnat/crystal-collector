@@ -67,3 +67,6 @@ etc/
 # output of generated Electron files
 electron/out
 electron/out-resources
+
+# output of generated js files, should be created from a github action
+public/client.js
