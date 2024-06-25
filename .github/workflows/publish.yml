@@ -3,6 +3,7 @@ name: Build/release
 
 # Run this workflow whenever a tag that starts with v is pushed to github.
 on: [push]
+  # COMMENT OUT FOR TESTING
   # push:
     # tags:
     #   - 'v*'
@@ -26,11 +27,12 @@ jobs:
 
       # Wine is required in order to generate an Electron build for Windows from
       # an Ubuntu machine.
-      - name: Install Wine
-        run: |
-          sudo dpkg --add-architecture i386
-          sudo apt update
-          sudo apt install -y wine-stable
+      # COMMENT OUT WHILE GETTING ELECTRON WORKING, THIS IS SLOW!
+      # - name: Install Wine
+      #   run: |
+      #     sudo dpkg --add-architecture i386
+      #     sudo apt update
+      #     sudo apt install -y wine-stable
 
       # Install dependencies for the app
       - name: Run app install
@@ -70,6 +72,7 @@ jobs:
       # environments, you'll need to write your own deploy script.
       # The depot{number}Path parameters correspond to the directories created
       # in the previous step by npm run make.
+      # COMMENT OUT UNTIL SECRETS ARE SETUP
       # - name: Deploy to Steam
       #   uses: game-ci/steam-deploy@v1.1.0
       #   with:
