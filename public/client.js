@@ -4048,7 +4048,9 @@ function updateCanvasSize() {
     } else {
         canvas.width = 800;
     }
+    scale = Math.max(1, Math.floor(scale));
     canvas.height = Math.max(300, Math.ceil(window.innerHeight / scale));
+    canvas.width = Math.ceil(window.innerWidth / scale);
     canvas.style.transformOrigin = '0 0'; //scale from top left
     canvas.style.transform = 'scale(' + scale + ')';
     canvas.scale = scale;
@@ -7653,11 +7655,11 @@ function renderBackground(context, state) {
     var columns = Math.ceil(canvas.width / height) + 2;
     var rows = Math.ceil(canvas.height / width) + 1;
     for (var row = topRow + rows - 1; row >= topRow; row--) {
-        var y = row * height - state.camera.top;
+        var y = Math.round(row * height - state.camera.top);
         var index = Math.min(cellBackgrounds.length - 1, Math.floor(row / 5));
         var frame = cellBackgrounds[index].frames[0];
         for (var column = leftColumn; column < leftColumn + columns; column++) {
-            var x = column * width - state.camera.left;
+            var x = Math.round(column * width - state.camera.left);
             drawImage(context, frame.image, frame, new Rectangle(0, 0, width, height).moveTo(x, y));
         }
     }
