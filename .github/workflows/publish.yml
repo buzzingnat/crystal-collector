@@ -27,12 +27,11 @@ jobs:
 
       # Wine is required in order to generate an Electron build for Windows from
       # an Ubuntu machine.
-      # COMMENT OUT WHILE GETTING ELECTRON WORKING, THIS IS SLOW!
-      # - name: Install Wine
-      #   run: |
-      #     sudo dpkg --add-architecture i386
-      #     sudo apt update
-      #     sudo apt install -y wine-stable
+      - name: Install Wine
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt update
+          sudo apt install -y wine-stable
 
       # Install dependencies for the app
       - name: Run app install
@@ -65,6 +64,9 @@ jobs:
           npm run make -- --platform=win32
           npm run make -- --platform=darwin
         working-directory: ./electron
+
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v4
 
       # View this action's source code and documentation at
       # https://github.com/game-ci/steam-deploy. Note that this action only
