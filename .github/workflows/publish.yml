@@ -15,10 +15,14 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v1
 
-      - name: Install Node.js & NPM
+      - name: Read .nvmrc
+        run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
+        id: nvm
+
+      - name: Use Node.js ${{ steps.nvm.outputs.NODE_VERSION }}
         uses: actions/setup-node@v2
         with:
-          node-version: '14.2.0'
+          node-version: ${{ steps.nvm.outputs.NODE_VERSION }}
 
       # Wine is required in order to generate an Electron build for Windows from
       # an Ubuntu machine.
