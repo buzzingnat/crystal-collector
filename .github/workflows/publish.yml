@@ -2,10 +2,10 @@
 name: Build/release
 
 # Run this workflow whenever a tag that starts with v is pushed to github.
-on:
-  push:
-    tags:
-      - 'v*'
+on: [push]
+  # push:
+    # tags:
+    #   - 'v*'
 
 jobs:
   release:
