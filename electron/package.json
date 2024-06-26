@@ -1,5 +1,5 @@
 {
-  "name": "Gem Hunter",
+  "name": "CrystalCollector",
   "version": "0.1.01-alpha",
   "description": "Rogue-like Puzzle Mining Game",
   "main": "src/index.js",
