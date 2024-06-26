@@ -10235,7 +10235,7 @@ var titleBottomFrame = r(800, 800, { image: requireImage('gfx/titlebottom.png') 
 //const trashFrame = r(480, 480, {'image': requireImage('gfx/trash.png')});
 var loadButtonAnimationTime = 400;
 var chooseFileButton = {
-    label: 'Start',
+    label: 'Start: Chris is Cute',
     onClick: function onClick(state) {
         return _extends({}, state, { loadScreen: state.time });
     },

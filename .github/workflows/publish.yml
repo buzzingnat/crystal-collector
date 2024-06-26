@@ -9,7 +9,7 @@ on: [push]
     #   - 'v*'
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -65,7 +65,14 @@ jobs:
           npm run make -- --platform=darwin
         working-directory: ./electron
 
+      - name: Upload Electron packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: electron_packages
+
+  download:
       - name: Download all workflow run artifacts
+        needs: build
         uses: actions/download-artifact@v4
 
       # View this action's source code and documentation at
