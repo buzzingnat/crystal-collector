@@ -1,5 +1,5 @@
 {
-  "name": "CrystalCollector",
+  "name": "Gem Hunter",
   "version": "0.1.01-alpha",
   "description": "Rogue-like Puzzle Mining Game",
   "main": "src/index.js",
@@ -13,7 +13,7 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "./app-icons/icon"
+        "icon": ".out-resources/gfx/logo1"
       },
       "makers": [
         {

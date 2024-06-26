@@ -1,6 +1,5 @@
 const fs = require('fs');
 const browserify = require('browserify');
-// const watchify = require('watchify');
 const eslintify = require('eslintify');
 
 const bundler = browserify({
@@ -9,7 +8,6 @@ const bundler = browserify({
     paths: ['./node_modules','./src/'],
     cache: {},
     packageCache: {}
-    // plugin: [watchify]
 }).transform({passthrough: 'warnings'}, eslintify)
   .transform("babelify");
 

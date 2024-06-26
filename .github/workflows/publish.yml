@@ -57,18 +57,38 @@ jobs:
       # generates three directories, corresponding to each platform.
       # Ubuntu is set as our environment, so platform auto resolves to that.
       # Notice the working-directory is now ./electron!
-      - name: Copy HTML app to electron/, and make Electron packages
-        run: |
-          node ../scripts/prepare-electron.js
-          npm run make
-          npm run make -- --platform=win32
-          npm run make -- --platform=darwin
+      - name: Copy HTML app to electron
+        run: node ../scripts/prepare-electron.js
         working-directory: ./electron
 
-      - name: Upload Electron packages
+      - name: Make linux Electron package
+        run: npm run make
+        working-directory: ./electron
+
+      - name: Upload linux Electron package
         uses: actions/upload-artifact@v4
         with:
-          name: electron_packages
+          name: gemhunter_electron_linux
+          path: electron/out
+
+      - name: Make darwin Electron package
+        run: npm run make -- --platform=darwin
+        working-directory: ./electron
+
+      - name: Upload darwin Electron package
+        uses: actions/upload-artifact@v4
+        with:
+          name: gemhunter_electron_darwin
+          path: electron/out
+
+      - name: Make win32 Electron package
+        run: npm run make -- --platform=win32
+        working-directory: ./electron
+
+      - name: Upload win32 Electron package
+        uses: actions/upload-artifact@v4
+        with:
+          name: gemhunter_electron_win32
           path: electron/out
 
       - name: Download all workflow run artifacts
