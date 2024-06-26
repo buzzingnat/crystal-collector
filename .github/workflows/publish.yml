@@ -71,11 +71,12 @@ jobs:
           name: electron_packages
 
   download:
+
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
       - name: Download all workflow run artifacts
-        needs: build
         uses: actions/download-artifact@v4
 
       # View this action's source code and documentation at
