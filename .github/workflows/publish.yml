@@ -83,7 +83,6 @@ jobs:
           name: gemhunter_electron_win32
           path: electron/out/make/zip/win32
 
-
       # npm run make uses Electron Forge, see package.json above for details.
       # We have to run make three times, once for each platform. This step
       # generates three directories, corresponding to each platform.
