@@ -69,7 +69,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: gemhunter_electron_darwin
-          path: electron/out/make/zip/darwin/arm64
+          path: electron/out/make/zip/darwin
 
       - name: Upload linux
         uses: actions/upload-artifact@v4
