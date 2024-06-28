@@ -14,6 +14,8 @@ const createWindow = () => {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
+    icon: '/app-icons/icon.png',
+    autoHideMenuBar: true,
   });
 
   // and load the index.html of the app.

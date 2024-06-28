@@ -1,5 +1,5 @@
 {
-  "name": "CrystalCollector",
+  "name": "GemHunter",
   "version": "0.1.01-alpha",
   "description": "Rogue-like Puzzle Mining Game",
   "main": "src/index.js",
@@ -13,7 +13,15 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": ".out-resources/gfx/logo1"
+        "name": "Gem Hunter",
+        "icon": "app-icons/icon",
+        "version-string": {
+          "CompanyName": "Avalon Studios LLC",
+          "FileDescription": "Gem Hunter",
+          "OriginalFilename": "GemHunter",
+          "ProductName": "Gem Hunter",
+          "InternalName": "GemHunter"
+        }
       },
       "makers": [
         {
