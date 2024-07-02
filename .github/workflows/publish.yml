@@ -84,59 +84,23 @@ jobs:
           name: gemhunter_electron_linux
           path: electron/out/make/zip/linux/x64
 
-      - name: Upload win32 x64 (64 bit)
+      - name: Upload win32
         uses: actions/upload-artifact@v4
         with:
-          name: gemhunter_electron_win32_x64
+          name: gemhunter_electron_win32
           path: electron/out/make/zip/win32/x64
 
-        - name: Upload win32 ia32 (32 bit)
-        uses: actions/upload-artifact@v4
-        with:
-          name: gemhunter_electron_win32_ia32
-          path: electron/out/make/zip/win32/x64
-
-      # npm run make uses Electron Forge, see package.json above for details.
-      # We have to run make three times, once for each platform. This step
-      # generates three directories, corresponding to each platform.
-      # Ubuntu is set as our environment, so platform auto resolves to that.
-      # Notice the working-directory is now ./electron!
-      # - name: Copy HTML app to electron
-      #   run: node ../scripts/prepare-electron.js
-      #   working-directory: ./electron
-
-      # - name: Make linux Electron package
-      #   run: npm run make
-      #   working-directory: ./electron
-
-      # - name: Upload linux Electron package
+      # - name: Upload win32 x64 (64 bit)
       #   uses: actions/upload-artifact@v4
       #   with:
-      #     name: gemhunter_electron_linux
-      #     path: electron/out
+      #     name: gemhunter_electron_win32_x64
+      #     path: electron/out/make/zip/win32/x64
 
-      # - name: Make darwin Electron package
-      #   run: npm run make -- --platform=darwin
-      #   working-directory: ./electron
-
-      # - name: Upload darwin Electron package
+      #   - name: Upload win32 ia32 (32 bit)
       #   uses: actions/upload-artifact@v4
       #   with:
-      #     name: gemhunter_electron_darwin
-      #     path: electron/out
-
-      # - name: Make win32 Electron package
-      #   run: npm run make -- --platform=win32
-      #   working-directory: ./electron
-
-      # - name: Upload win32 Electron package
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: gemhunter_electron_win32
-      #     path: electron/out
-
-      # - name: Download all workflow run artifacts
-      #   uses: actions/download-artifact@v4
+      #     name: gemhunter_electron_win32_ia32
+      #     path: electron/out/make/zip/win32/x64
 
       # View this action's source code and documentation at
       # https://github.com/game-ci/steam-deploy. Note that this action only
