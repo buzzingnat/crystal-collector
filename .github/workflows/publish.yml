@@ -61,15 +61,21 @@ jobs:
         run: |
           node ../scripts/prepare-electron.js
           npm run make
-          npm run make -- --platform=win32
-          npm run make -- --platform=darwin
+          npm run make -- --arch="ia32,x64" --platform=win32
+          npm run make -- --arch="arm64,x64" --platform=darwin
         working-directory: ./electron
 
-      - name: Upload darwin
+      - name: Upload darwin x64 (intel chip)
         uses: actions/upload-artifact@v4
         with:
           name: gemhunter_electron_darwin
           path: electron/out/make/zip/darwin/x64
+
+      - name: Upload darwin arm64 (M1 silicon)
+        uses: actions/upload-artifact@v4
+        with:
+          name: gemhunter_electron_darwin
+          path: electron/out/make/zip/darwin/arm64
 
       - name: Upload linux
         uses: actions/upload-artifact@v4
