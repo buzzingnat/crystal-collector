@@ -97,11 +97,11 @@ jobs:
           name: gemhunter_electron_win32_x64
           path: electron/out/make/zip/win32/x64
 
-        - name: Upload win32 ia32 (32 bit)
-        uses: actions/upload-artifact@v4
-        with:
-          name: gemhunter_electron_win32_ia32
-          path: electron/out/make/zip/win32/ia32
+        # - name: Upload win32 ia32 (32 bit)
+        # uses: actions/upload-artifact@v4
+        # with:
+        #   name: gemhunter_electron_win32_ia32
+        #   path: electron/out/make/zip/win32/ia32
 
       # View this action's source code and documentation at
       # https://github.com/game-ci/steam-deploy. Note that this action only
