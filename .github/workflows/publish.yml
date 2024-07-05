@@ -95,7 +95,7 @@ jobs:
       # The depot{number}Path parameters correspond to the directories created
       # in the previous step by npm run make.
       - name: Deploy to Steam
-        uses: game-ci/steam-deploy@v1.1.0
+        uses: game-ci/steam-deploy@v3.0.4
         with:
           username: ${{ secrets.STEAM_USERNAME }}
           password: ${{ secrets.STEAM_PASSWORD }}
