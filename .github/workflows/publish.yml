@@ -88,12 +88,12 @@ jobs:
           name: gemhunter_electron_win32
           path: electron/out/make/zip/win32/x64
 
-      View this action's source code and documentation at
-      https://github.com/game-ci/steam-deploy. Note that this action only
-      works in ubuntu environments. If you want to run in Mac OS or Windows
-      environments, you'll need to write your own deploy script.
-      The depot{number}Path parameters correspond to the directories created
-      in the previous step by npm run make.
+      # View this action's source code and documentation at
+      # https://github.com/game-ci/steam-deploy. Note that this action only
+      # works in ubuntu environments. If you want to run in Mac OS or Windows
+      # environments, you'll need to write your own deploy script.
+      # The depot{number}Path parameters correspond to the directories created
+      # in the previous step by npm run make.
       - name: Deploy to Steam
         uses: game-ci/steam-deploy@v1.1.0
         with:
