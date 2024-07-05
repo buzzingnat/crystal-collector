@@ -59,31 +59,22 @@ jobs:
       # Notice the working-directory is now ./electron!
       - name: Copy HTML app to electron/, and make Electron packages
       # npm run make -- --arch="ia32,x64" --platform=win32
+      # m1 silicon macs use arm64, intel macs use x64
       # npm run make -- --arch="arm64,x64" --platform=darwin
+      # the following has this error: FAILED: @electron/universal is only supported on darwin platforms
+      # npm run make -- --arch=universal --platform=darwin
         run: |
           node ../scripts/prepare-electron.js
           npm run make
+          npm run make -- --platform=darwin
           npm run make -- --platform=win32
-          npm run make -- --arch=universal --platform=darwin
         working-directory: ./electron
 
-      # - name: Upload darwin x64 (intel chip)
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: gemhunter_electron_darwin_x64
-      #     path: electron/out/make/zip/darwin/x64
-
-      # - name: Upload darwin arm64 (M1 silicon)
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: gemhunter_electron_darwin_arm64
-      #     path: electron/out/make/zip/darwin/arm64
-
-      - name: Upload darwin universal binary
+      - name: Upload darwin x64 (intel chip)
         uses: actions/upload-artifact@v4
         with:
           name: gemhunter_electron_darwin_x64
-          path: electron/out/make/zip/darwin
+          path: electron/out/make/zip/darwin/x64
 
       - name: Upload linux
         uses: actions/upload-artifact@v4
@@ -96,18 +87,6 @@ jobs:
         with:
           name: gemhunter_electron_win32
           path: electron/out/make/zip/win32/x64
-
-      # - name: Upload win32 x64 (64 bit)
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: gemhunter_electron_win32_x64
-      #     path: electron/out/make/zip/win32/x64
-
-        # - name: Upload win32 ia32 (32 bit)
-        # uses: actions/upload-artifact@v4
-        # with:
-        #   name: gemhunter_electron_win32_ia32
-        #   path: electron/out/make/zip/win32/ia32
 
       # View this action's source code and documentation at
       # https://github.com/game-ci/steam-deploy. Note that this action only
@@ -128,7 +107,6 @@ jobs:
       #     buildDescription: ${{ github.ref }}
       #     rootPath: electron/out
       #     depot1Path: ${{ github.repository }}-darwin-x64
-      #     depot2Path: ${{ github.repository }}-darwin-arm64
-      #     depot3Path: ${{ github.repository }}-win32-x64
-      #     depot4Path: ${{ github.repository }}-linux-x64
+      #     depot2Path: ${{ github.repository }}-win32-x64
+      #     depot3Path: ${{ github.repository }}-linux-x64
       #     releaseBranch: prerelease
