@@ -66,27 +66,39 @@ jobs:
         run: |
           node ../scripts/prepare-electron.js
           npm run make
-          npm run make -- --platform=darwin
           npm run make -- --platform=win32
+          npm run make -- --platform=darwin
         working-directory: ./electron
 
       - name: Upload darwin x64 (intel chip)
         uses: actions/upload-artifact@v4
         with:
-          name: gemhunter_electron_darwin_x64
+          name: gemblast_electron_darwin_x64
           path: electron/out/make/zip/darwin/x64
 
       - name: Upload linux
         uses: actions/upload-artifact@v4
         with:
-          name: gemhunter_electron_linux
+          name: gemblast_electron_linux_x64
           path: electron/out/make/zip/linux/x64
 
       - name: Upload win32
         uses: actions/upload-artifact@v4
         with:
-          name: gemhunter_electron_win32
+          name: gemblast_electron_win32_x64
           path: electron/out/make/zip/win32/x64
+
+      - name: Check depot path names
+        run: echo ${{ github.repository }}
+
+      - name: Darwin path name
+        run: echo ${{ github.repository }} + "-darwin-x64"
+
+      - name: Windows path name
+        run: echo ${{ github.repository }} + "-win32-x64"
+
+      - name: Linux path name
+        run: echo ${{ github.repository }} + "-linux-x64"
 
       # View this action's source code and documentation at
       # https://github.com/game-ci/steam-deploy. Note that this action only
