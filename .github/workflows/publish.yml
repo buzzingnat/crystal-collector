@@ -16,17 +16,6 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v1
 
-- id: sets-a-secret
-        name: Generate, mask, and output a secret
-        run: |
-          the_secret=$((RANDOM))
-          echo "::add-mask::$the_secret"
-          echo "secret-number=$the_secret" >> "$GITHUB_OUTPUT"
-      - name: Use that secret output (protected by a mask)
-        run: |
-          echo "the secret number is ${{ steps.sets-a-secret.outputs.secret-number }}"
-
-
       # Try using newer github actions
       # - name: Read .nvmrc
       #   run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
@@ -118,6 +107,10 @@ jobs:
           ls ${{ github.workspace }}/electron/out/make
           echo "** electron/out/make/zip folder **"
           ls ${{ github.workspace }}/electron/out/make/zip
+          echo "** electron/out/make/zip/darwin folder **"
+          ls ${{ github.workspace }}/electron/out/make/zip/darwin
+          echo "** electron/out/make/zip/linux folder **"
+          ls ${{ github.workspace }}/electron/out/make/zip/linux
 
       # View this action's source code and documentation at
       # https://github.com/game-ci/steam-deploy. Note that this action only
