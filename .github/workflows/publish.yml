@@ -88,15 +88,6 @@ jobs:
           name: gemblast_electron_win32_x64
           path: electron/out/make/zip/win32/x64
 
-      - name: Check depot path names
-        run: echo ${{ github.repository }}
-
-      - name: check if STEAM_CONFIG_VDF exists
-        env:
-            super_secret: ${{ secrets.STEAM_CONFIG_VDF }}
-        if: ${{ env.super_secret == '' }}
-        run: echo "the secret \"STEAM_CONFIG_VDF\" has not been made, please go to \"settings \> secrets \> actions\" to create it"
-
       # View this action's source code and documentation at
       # https://github.com/game-ci/steam-deploy. Note that this action only
       # works in ubuntu environments. If you want to run in Mac OS or Windows
