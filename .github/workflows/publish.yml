@@ -16,14 +16,27 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v1
 
+- id: sets-a-secret
+        name: Generate, mask, and output a secret
+        run: |
+          the_secret=$((RANDOM))
+          echo "::add-mask::$the_secret"
+          echo "secret-number=$the_secret" >> "$GITHUB_OUTPUT"
+      - name: Use that secret output (protected by a mask)
+        run: |
+          echo "the secret number is ${{ steps.sets-a-secret.outputs.secret-number }}"
+
+
       # Try using newer github actions
       # - name: Read .nvmrc
       #   run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
       - name: Read .nvmrc
-        run: echo "{NODE_VERSION}={cat .nvmrc}" >> $GITHUB_OUTPUT
+        run: |
+          node_version={cat .nvmrc}
+          echo "NODE_VERSION=$node_version" >> "$GITHUB_OUTPUT"
         id: nvm
 
-      - name: Use Node.js ${{ steps.nvm.outputs.NODE_VERSION }}
+      - name: Use Node.js ${{ steps.nvm.outputs.node_version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ steps.nvm.outputs.NODE_VERSION }}
