@@ -129,7 +129,7 @@ jobs:
           appId: 2560850
           buildDescription: ${{ github.ref }}
           rootPath: electron/out
-          depot1Path: Gem Blast-darwin-x64
-          depot2Path: Gem Blast-win32-x64
+          depot1Path: Gem Blast-win32-x64
+          depot2Path: Gem Blast-darwin-x64
           depot3Path: Gem Blast-linux-x64
           releaseBranch: prerelease
