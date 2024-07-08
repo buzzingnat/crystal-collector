@@ -27,11 +27,12 @@ jobs:
 
       # Wine is required in order to generate an Electron build for Windows from
       # an Ubuntu machine.
-      - name: Install Wine
-        run: |
-          sudo dpkg --add-architecture i386
-          sudo apt update
-          sudo apt install -y wine-stable
+      # REMOVE WHILE TESTING
+      # - name: Install Wine
+      #   run: |
+      #     sudo dpkg --add-architecture i386
+      #     sudo apt update
+      #     sudo apt install -y wine-stable
 
       # Install dependencies for the app
       - name: Run app install
@@ -63,30 +64,39 @@ jobs:
       # npm run make -- --arch="arm64,x64" --platform=darwin
       # the following has this error: FAILED: @electron/universal is only supported on darwin platforms
       # npm run make -- --arch=universal --platform=darwin
+      # REMOVE WHILE TESTING: npm run make -- --platform=win32
         run: |
           node ../scripts/prepare-electron.js
           npm run make
-          npm run make -- --platform=win32
           npm run make -- --platform=darwin
         working-directory: ./electron
 
-      - name: Upload darwin x64 (intel chip)
-        uses: actions/upload-artifact@v4
-        with:
-          name: gemblast_electron_darwin_x64
-          path: electron/out/make/zip/darwin/x64
+      # REMOVE WHILE TESTING
+      # - name: Upload darwin x64 (intel chip)
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: gemblast_electron_darwin_x64
+      #     path: electron/out/make/zip/darwin/x64
 
-      - name: Upload linux
-        uses: actions/upload-artifact@v4
-        with:
-          name: gemblast_electron_linux_x64
-          path: electron/out/make/zip/linux/x64
+      # - name: Upload linux
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: gemblast_electron_linux_x64
+      #     path: electron/out/make/zip/linux/x64
 
-      - name: Upload win32
-        uses: actions/upload-artifact@v4
-        with:
-          name: gemblast_electron_win32_x64
-          path: electron/out/make/zip/win32/x64
+      # - name: Upload win32
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: gemblast_electron_win32_x64
+      #     path: electron/out/make/zip/win32/x64
+
+      - name: check files exist on github
+        run: |
+          ls ${{ github.workspace }}
+          ls ${{ github.workspace }}/electron
+          cd ${{ github.workspace }}/electron
+          echo pwd
+          ls ${{ github.workspace }}/electron/out/
 
       # View this action's source code and documentation at
       # https://github.com/game-ci/steam-deploy. Note that this action only
@@ -94,15 +104,15 @@ jobs:
       # environments, you'll need to write your own deploy script.
       # The depot{number}Path parameters correspond to the directories created
       # in the previous step by npm run make.
-      - name: Deploy to Steam
-        uses: game-ci/steam-deploy@v3.0.4
-        with:
-          username: ${{ secrets.STEAM_USERNAME }}
-          configVdf: ${{ secrets.STEAM_CONFIG_VDF}}
-          appId: 2560850
-          buildDescription: ${{ github.ref }}
-          rootPath: electron/out
-          depot1Path: ${{ github.repository }}-darwin-x64
-          depot2Path: ${{ github.repository }}-win32-x64
-          depot3Path: ${{ github.repository }}-linux-x64
-          releaseBranch: prerelease
+      # - name: Deploy to Steam
+      #   uses: game-ci/steam-deploy@v3.0.4
+      #   with:
+      #     username: ${{ secrets.STEAM_USERNAME }}
+      #     configVdf: ${{ secrets.STEAM_CONFIG_VDF}}
+      #     appId: 2560850
+      #     buildDescription: ${{ github.ref }}
+      #     rootPath: electron/out
+      #     depot1Path: ${{ github.repository }}-darwin-x64
+      #     depot2Path: ${{ github.repository }}-win32-x64
+      #     depot3Path: ${{ github.repository }}-linux-x64
+      #     releaseBranch: prerelease
