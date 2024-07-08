@@ -91,7 +91,7 @@ jobs:
       - name: Check depot path names
         run: echo ${{ github.repository }}
 
-      - name: "check if STEAM_CONFIG_VDF exists"
+      - name: check if STEAM_CONFIG_VDF exists
         env:
             super_secret: ${{ secrets.STEAM_CONFIG_VDF }}
         if: ${{ env.super_secret == '' }}
