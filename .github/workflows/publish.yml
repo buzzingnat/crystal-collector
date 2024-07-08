@@ -91,14 +91,11 @@ jobs:
       - name: Check depot path names
         run: echo ${{ github.repository }}
 
-      - name: Darwin path name
-        run: echo ${{ github.repository }} + "-darwin-x64"
-
-      - name: Windows path name
-        run: echo ${{ github.repository }} + "-win32-x64"
-
-      - name: Linux path name
-        run: echo ${{ github.repository }} + "-linux-x64"
+      - name: "check if STEAM_CONFIG_VDF exists"
+        env:
+            super_secret: ${{ secrets.STEAM_CONFIG_VDF }}
+        if: ${{ env.super_secret == '' }}
+        run: 'echo "echo the secret \"STEAM_CONFIG_VDF\" has not been made; echo please go to \"settings \> secrets \> actions\" to create it"
 
       # View this action's source code and documentation at
       # https://github.com/game-ci/steam-deploy. Note that this action only
@@ -110,10 +107,7 @@ jobs:
         uses: game-ci/steam-deploy@v3.0.4
         with:
           username: ${{ secrets.STEAM_USERNAME }}
-          password: ${{ secrets.STEAM_PASSWORD }}
           configVdf: ${{ secrets.STEAM_CONFIG_VDF}}
-          ssfnFileName: ${{ secrets.STEAM_SSFN_FILE_NAME }}
-          ssfnFileContents: ${{ secrets.STEAM_SSFN_FILE_CONTENTS }}
           appId: 2560850
           buildDescription: ${{ github.ref }}
           rootPath: electron/out
