@@ -95,7 +95,7 @@ jobs:
         env:
             super_secret: ${{ secrets.STEAM_CONFIG_VDF }}
         if: ${{ env.super_secret == '' }}
-        run: 'echo "echo the secret \"STEAM_CONFIG_VDF\" has not been made; echo please go to \"settings \> secrets \> actions\" to create it"
+        run: echo "the secret \"STEAM_CONFIG_VDF\" has not been made, please go to \"settings \> secrets \> actions\" to create it"
 
       # View this action's source code and documentation at
       # https://github.com/game-ci/steam-deploy. Note that this action only
