@@ -16,8 +16,11 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v1
 
+      # Try using newer github actions
+      # - name: Read .nvmrc
+      #   run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
       - name: Read .nvmrc
-        run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
+        run: echo "{NODE_VERSION}={cat .nvmrc}" >> $GITHUB_OUTPUT
         id: nvm
 
       - name: Use Node.js ${{ steps.nvm.outputs.NODE_VERSION }}
@@ -100,6 +103,8 @@ jobs:
           ls ${{ github.workspace }}/electron/out/
           echo "** electron/out/make folder **"
           ls ${{ github.workspace }}/electron/out/make
+          echo "** electron/out/make/zip folder **"
+          ls ${{ github.workspace }}/electron/out/make/zip
 
       # View this action's source code and documentation at
       # https://github.com/game-ci/steam-deploy. Note that this action only
@@ -115,7 +120,7 @@ jobs:
           appId: 2560850
           buildDescription: ${{ github.ref }}
           rootPath: electron/out
-          depot1Path: ${{ github.workspace }}electron/out/Gem Blast-darwin-x64
+          depot1Path: Gem Blast-darwin-x64
       #     depot2Path: ${{ github.repository }}-win32-x64
-          depot3Path: ${{ github.workspace }}electron/out/Gem Blast-linux-x64
+          depot3Path: Gem Blast-linux-x64
           releaseBranch: prerelease
