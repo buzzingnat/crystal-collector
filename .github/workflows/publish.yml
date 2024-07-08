@@ -92,11 +92,14 @@ jobs:
 
       - name: check files exist on github
         run: |
+          echo "** workspace **"
           ls ${{ github.workspace }}
+          echo "** electron folder **"
           ls ${{ github.workspace }}/electron
-          cd ${{ github.workspace }}/electron
-          echo pwd
+          echo "** electron/out folder **"
           ls ${{ github.workspace }}/electron/out/
+          echo "** electron/out/make folder **"
+          ls ${{ github.workspace }}/electron/out/make
 
       # View this action's source code and documentation at
       # https://github.com/game-ci/steam-deploy. Note that this action only
@@ -104,15 +107,15 @@ jobs:
       # environments, you'll need to write your own deploy script.
       # The depot{number}Path parameters correspond to the directories created
       # in the previous step by npm run make.
-      # - name: Deploy to Steam
-      #   uses: game-ci/steam-deploy@v3.0.4
-      #   with:
-      #     username: ${{ secrets.STEAM_USERNAME }}
-      #     configVdf: ${{ secrets.STEAM_CONFIG_VDF}}
-      #     appId: 2560850
-      #     buildDescription: ${{ github.ref }}
-      #     rootPath: electron/out
-      #     depot1Path: ${{ github.repository }}-darwin-x64
+      - name: Deploy to Steam
+        uses: game-ci/steam-deploy@v3.0.4
+        with:
+          username: ${{ secrets.STEAM_USERNAME }}
+          configVdf: ${{ secrets.STEAM_CONFIG_VDF}}
+          appId: 2560850
+          buildDescription: ${{ github.ref }}
+          rootPath: electron/out
+          depot1Path: ${{ github.workspace }}electron/out/Gem Blast-darwin-x64
       #     depot2Path: ${{ github.repository }}-win32-x64
-      #     depot3Path: ${{ github.repository }}-linux-x64
-      #     releaseBranch: prerelease
+          depot3Path: ${{ github.workspace }}electron/out/Gem Blast-linux-x64
+          releaseBranch: prerelease
