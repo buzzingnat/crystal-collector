@@ -2,11 +2,11 @@
 name: Build/release
 
 # Run this workflow whenever a tag that starts with v is pushed to github.
+# to add a tag, do this before committing and pushing: $ git tag -a v1.4 -m "my version 1.4"
 on: [push]
-  # COMMENT OUT FOR TESTING
-  # push:
-    # tags:
-    #   - 'v*'
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   build:
@@ -63,11 +63,6 @@ jobs:
       # Ubuntu is set as our environment, so platform auto resolves to that.
       # Notice the working-directory is now ./electron!
       - name: Copy HTML app to electron/, and make Electron packages
-      # npm run make -- --arch="ia32,x64" --platform=win32
-      # m1 silicon macs use arm64, intel macs use x64
-      # npm run make -- --arch="arm64,x64" --platform=darwin
-      # the following has this error: FAILED: @electron/universal is only supported on darwin platforms
-      # npm run make -- --arch=universal --platform=darwin
         run: |
           node ../scripts/prepare-electron.js
           npm run make
@@ -75,45 +70,12 @@ jobs:
           npm run make -- --platform=darwin
         working-directory: ./electron
 
-      # REMOVE WHILE TESTING
-      # - name: Upload darwin x64 (intel chip)
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: gemblast_electron_darwin_x64
-      #     path: electron/out/make/zip/darwin/x64
-
-      # - name: Upload linux
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: gemblast_electron_linux_x64
-      #     path: electron/out/make/zip/linux/x64
-
-      # - name: Upload win32
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: gemblast_electron_win32_x64
-      #     path: electron/out/make/zip/win32/x64
-
       - name: check files exist on github
         run: |
           echo "** workspace **"
           ls ${{ github.workspace }}
-          echo "** electron folder **"
-          ls ${{ github.workspace }}/electron
           echo "** electron/out folder **"
           ls ${{ github.workspace }}/electron/out/
-          echo "** electron/out/make folder **"
-          ls ${{ github.workspace }}/electron/out/make
-          echo "** electron/out/make/zip folder **"
-          ls ${{ github.workspace }}/electron/out/make/zip
-          echo "** electron/out/make/zip/darwin folder **"
-          ls ${{ github.workspace }}/electron/out/make/zip/darwin
-          echo "** electron/out/make/zip/darwin/x64 folder **"
-          ls ${{ github.workspace }}/electron/out/make/zip/darwin/x64
-          echo "** electron/out/make/zip/linux folder **"
-          ls ${{ github.workspace }}/electron/out/make/zip/linux
-          echo "** electron/out/make/zip/linux/x64 folder **"
-          ls ${{ github.workspace }}/electron/out/make/zip/linux/x64
 
       # View this action's source code and documentation at
       # https://github.com/game-ci/steam-deploy. Note that this action only
