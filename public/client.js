@@ -7263,7 +7263,7 @@ function render(context, state) {
     if (!areImagesLoaded() || !state.interacted) {
         // Don't render for the first 200ms, to prevent 'Loading...' from flashing
         // when assets are cached.
-        if (Date.now() - loadTime > 200) renderPlayButton(context, state);
+        if (Date.now() - loadTime > 200 && !window.electronAPI) renderPlayButton(context, state);
         return;
     }
     if (state.outroTime !== false) {
@@ -10061,25 +10061,11 @@ var titleBottomFrame = r(800, 800, { image: requireImage('gfx/titlebottom.png') 
 // Trash icon from: https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Trash_font_awesome.svg/480px-Trash_font_awesome.svg.png
 //const trashFrame = r(480, 480, {'image': requireImage('gfx/trash.png')});
 var loadButtonAnimationTime = 400;
-// const quitGameButton = {
-//     label: 'Quit',
-//     onClick(state) {
-//         console.log('Trying to quit Gem Blast');
-//         console.log({window});
-//         return {...state};
-//     },
-//     render: renderBasicButton,
-//     resize({width, height, buttonWidth, buttonHeight}) {
-//         this.height = buttonHeight;
-//         this.width = buttonWidth;
-//         this.top = 5.5 * height / 6 - this.height / 2;
-//         this.left = (width - this.width) / 2;
-//     },
-// }
-var chooseFileButton = {
-    label: 'Start',
+var quitGameButton = {
+    label: 'Quit',
     onClick: function onClick(state) {
-        return _extends({}, state, { loadScreen: state.time });
+        window.electronAPI.setCloseButton(true);
+        return _extends({}, state);
     },
 
     render: renderBasicButton,
@@ -10089,10 +10075,39 @@ var chooseFileButton = {
             buttonWidth = _ref.buttonWidth,
             buttonHeight = _ref.buttonHeight;
 
+        var padding = buttonHeight / 10;
+        this.height = buttonHeight;
+        this.width = buttonWidth;
+        // this.top = (5 * height / 6) + (this.height / 2) + padding - (this.height / 4);
+        this.top = height - buttonHeight - padding;
+        this.left = (width - this.width) / 2;
+        // top should always be height - buttonHeight - padding
+    }
+};
+var chooseFileButton = {
+    label: 'Start',
+    onClick: function onClick(state) {
+        return _extends({}, state, { loadScreen: state.time });
+    },
+
+    render: renderBasicButton,
+    resize: function resize(_ref2) {
+        var width = _ref2.width,
+            height = _ref2.height,
+            buttonWidth = _ref2.buttonWidth,
+            buttonHeight = _ref2.buttonHeight;
+
         this.height = buttonHeight;
         this.width = buttonWidth;
         this.top = 5 * height / 6 - this.height / 2;
         this.left = (width - this.width) / 2;
+        if (window.electronAPI) {
+            // shift start button up to make room for quit button
+            // this.top = this.top - this.height / 4;
+            var padding = buttonHeight / 10;
+            this.top = height - 2 * buttonHeight - 2 * padding;
+            console.log('make room for quit button below start button');
+        }
     }
 };
 var fileButton = {
@@ -10197,11 +10212,11 @@ var fileButton = {
         //state.saved.shipPart = 0; // reset ship part.
         return state;
     },
-    resize: function resize(_ref2) {
-        var animationTime = _ref2.animationTime,
-            width = _ref2.width,
-            height = _ref2.height,
-            padding = _ref2.padding;
+    resize: function resize(_ref3) {
+        var animationTime = _ref3.animationTime,
+            width = _ref3.width,
+            height = _ref3.height,
+            padding = _ref3.padding;
 
         var p = (animationTime - this.delay()) / loadButtonAnimationTime;
         p = Math.min(1, Math.max(0, p));
@@ -10277,11 +10292,11 @@ var confirmDeleteButton = {
     },
 
     render: renderBasicButton,
-    resize: function resize(_ref3) {
-        var buttonWidth = _ref3.buttonWidth,
-            buttonHeight = _ref3.buttonHeight,
-            width = _ref3.width,
-            height = _ref3.height;
+    resize: function resize(_ref4) {
+        var buttonWidth = _ref4.buttonWidth,
+            buttonHeight = _ref4.buttonHeight,
+            width = _ref4.width,
+            height = _ref4.height;
 
         this.width = buttonWidth;
         this.height = buttonHeight;
@@ -10296,11 +10311,11 @@ var cancelDeleteButton = {
     },
 
     render: renderBasicButton,
-    resize: function resize(_ref4) {
-        var buttonWidth = _ref4.buttonWidth,
-            buttonHeight = _ref4.buttonHeight,
-            width = _ref4.width,
-            height = _ref4.height;
+    resize: function resize(_ref5) {
+        var buttonWidth = _ref5.buttonWidth,
+            buttonHeight = _ref5.buttonHeight,
+            width = _ref5.width,
+            height = _ref5.height;
 
         this.width = buttonWidth;
         this.height = buttonHeight;
@@ -10310,7 +10325,17 @@ var cancelDeleteButton = {
 };
 
 function getTitleHUDButtons(state) {
-    // if (window.process && !state.loadScreen) return [chooseFileButton, quitGameButton];
+    //     {
+    //     "chooseFileButton": {
+    //         "label": "Start",
+    //         "height": 91,
+    //         "width": 228,
+    //         "top": 854.5,
+    //         "left": 568.5,
+    //         "lastResized": 1720624857362
+    //     }
+    // }
+    if (window.electronAPI && !state.loadScreen) return [chooseFileButton, quitGameButton];
     if (!state.loadScreen) return [chooseFileButton];
     if (state.deleteSlot !== false) return [confirmDeleteButton, cancelDeleteButton];
     return [].concat(_toConsumableArray(fileButtons), _toConsumableArray(deleteFileButtons));
