@@ -7,8 +7,10 @@
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "prepare": "cd ../ && node scripts/build-src-once.js && cd electron && node ../scripts/prepare-electron.js",
+    "prepare": "cd ../ && node scripts/set-demo-false.js && node scripts/build-src-once.js && cd electron && node ../scripts/prepare-electron.js",
+    "prepareDemo": "cd ../ && node scripts/set-demo-true.js && node scripts/build-src-once.js && cd electron && node ../scripts/prepare-electron.js",
     "runLocally": "npm-run-all prepare package start",
+    "runDemoLocally": "npm-run-all prepareDemo package start",
     "make": "electron-forge make"
   },
   "config": {

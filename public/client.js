@@ -3821,7 +3821,7 @@ function renderAchievements(context, state) {
     }
 }
 
-},{"Rectangle":2,"animations":4,"draw":7,"gameConstants":8,"ship":18,"sprites":21,"state":22}],4:[function(require,module,exports){
+},{"Rectangle":2,"animations":4,"draw":7,"gameConstants":8,"ship":19,"sprites":22,"state":23}],4:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -4229,7 +4229,7 @@ var renderLoop = function renderLoop() {
 //setInterval(renderLoop, 5);
 renderLoop();
 
-},{"gameConstants":8,"options":12,"render":14,"sounds":20,"state":22}],6:[function(require,module,exports){
+},{"gameConstants":8,"options":13,"render":15,"sounds":21,"state":23}],6:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -4238,14 +4238,17 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 var random = require('random');
 
-var _require = require('gameConstants'),
-    canvas = _require.canvas,
-    FRAME_LENGTH = _require.FRAME_LENGTH,
-    EDGE_LENGTH = _require.EDGE_LENGTH,
-    COLUMN_WIDTH = _require.COLUMN_WIDTH,
-    ROW_HEIGHT = _require.ROW_HEIGHT,
-    SHORT_EDGE = _require.SHORT_EDGE,
-    LONG_EDGE = _require.LONG_EDGE;
+var _require = require('isDemo'),
+    IS_DEMO = _require.IS_DEMO;
+
+var _require2 = require('gameConstants'),
+    canvas = _require2.canvas,
+    FRAME_LENGTH = _require2.FRAME_LENGTH,
+    EDGE_LENGTH = _require2.EDGE_LENGTH,
+    COLUMN_WIDTH = _require2.COLUMN_WIDTH,
+    ROW_HEIGHT = _require2.ROW_HEIGHT,
+    SHORT_EDGE = _require2.SHORT_EDGE,
+    LONG_EDGE = _require2.LONG_EDGE;
 
 var CRYSTAL_SIZES = [1, 5, 10, 25, 100, 500, 1000, 2500, 10000, 50000, 100000, 250000, 1E6, 5E6, 10E6, 25E6];
 
@@ -4277,52 +4280,52 @@ module.exports = {
     revealCellNumbers: revealCellNumbers
 };
 
-var _require2 = require('state'),
-    playSound = _require2.playSound,
-    updateSave = _require2.updateSave,
-    nextDay = _require2.nextDay;
+var _require3 = require('state'),
+    playSound = _require3.playSound,
+    updateSave = _require3.updateSave,
+    nextDay = _require3.nextDay;
 
-var _require3 = require('sprites'),
-    addSprite = _require3.addSprite,
-    bombSprite = _require3.bombSprite,
-    crystalSprite = _require3.crystalSprite,
-    debrisSprite = _require3.debrisSprite,
-    diffuserSprite = _require3.diffuserSprite,
-    shipDebrisSprite = _require3.shipDebrisSprite,
-    explosionSprite = _require3.explosionSprite,
-    shieldSprite = _require3.shieldSprite,
-    particleAnimations = _require3.particleAnimations,
-    lavaBubbleSprite = _require3.lavaBubbleSprite,
-    lavaBubbleAnimations = _require3.lavaBubbleAnimations;
+var _require4 = require('sprites'),
+    addSprite = _require4.addSprite,
+    bombSprite = _require4.bombSprite,
+    crystalSprite = _require4.crystalSprite,
+    debrisSprite = _require4.debrisSprite,
+    diffuserSprite = _require4.diffuserSprite,
+    shipDebrisSprite = _require4.shipDebrisSprite,
+    explosionSprite = _require4.explosionSprite,
+    shieldSprite = _require4.shieldSprite,
+    particleAnimations = _require4.particleAnimations,
+    lavaBubbleSprite = _require4.lavaBubbleSprite,
+    lavaBubbleAnimations = _require4.lavaBubbleAnimations;
 
-var _require4 = require('achievements'),
-    getAchievementBonus = _require4.getAchievementBonus,
-    incrementAchievementStat = _require4.incrementAchievementStat,
-    ACHIEVEMENT_COLLECT_X_CRYSTALS = _require4.ACHIEVEMENT_COLLECT_X_CRYSTALS,
-    ACHIEVEMENT_COLLECT_X_CRYSTALS_IN_ONE_DAY = _require4.ACHIEVEMENT_COLLECT_X_CRYSTALS_IN_ONE_DAY,
-    ACHIEVEMENT_GAIN_X_BONUS_FUEL_IN_ONE_DAY = _require4.ACHIEVEMENT_GAIN_X_BONUS_FUEL_IN_ONE_DAY,
-    ACHIEVEMENT_REPAIR_SHIP_IN_X_DAYS = _require4.ACHIEVEMENT_REPAIR_SHIP_IN_X_DAYS,
-    ACHIEVEMENT_PREVENT_X_EXPLOSIONS = _require4.ACHIEVEMENT_PREVENT_X_EXPLOSIONS,
-    ACHIEVEMENT_DIFFUSE_X_BOMBS = _require4.ACHIEVEMENT_DIFFUSE_X_BOMBS;
+var _require5 = require('achievements'),
+    getAchievementBonus = _require5.getAchievementBonus,
+    incrementAchievementStat = _require5.incrementAchievementStat,
+    ACHIEVEMENT_COLLECT_X_CRYSTALS = _require5.ACHIEVEMENT_COLLECT_X_CRYSTALS,
+    ACHIEVEMENT_COLLECT_X_CRYSTALS_IN_ONE_DAY = _require5.ACHIEVEMENT_COLLECT_X_CRYSTALS_IN_ONE_DAY,
+    ACHIEVEMENT_GAIN_X_BONUS_FUEL_IN_ONE_DAY = _require5.ACHIEVEMENT_GAIN_X_BONUS_FUEL_IN_ONE_DAY,
+    ACHIEVEMENT_REPAIR_SHIP_IN_X_DAYS = _require5.ACHIEVEMENT_REPAIR_SHIP_IN_X_DAYS,
+    ACHIEVEMENT_PREVENT_X_EXPLOSIONS = _require5.ACHIEVEMENT_PREVENT_X_EXPLOSIONS,
+    ACHIEVEMENT_DIFFUSE_X_BOMBS = _require5.ACHIEVEMENT_DIFFUSE_X_BOMBS;
 
-var _require5 = require('treasures'),
-    collectTreasure = _require5.collectTreasure;
+var _require6 = require('treasures'),
+    collectTreasure = _require6.collectTreasure;
 
-var _require6 = require('ship'),
-    collectShipPart = _require6.collectShipPart,
-    getShipPartLocation = _require6.getShipPartLocation;
+var _require7 = require('ship'),
+    collectShipPart = _require7.collectShipPart,
+    getShipPartLocation = _require7.getShipPartLocation;
 
-var _require7 = require('renderRobot'),
-    teleportInAnimationFinish = _require7.teleportInAnimationFinish,
-    teleportOutAnimationStart = _require7.teleportOutAnimationStart,
-    teleportOutAnimationFinish = _require7.teleportOutAnimationFinish;
+var _require8 = require('renderRobot'),
+    teleportInAnimationFinish = _require8.teleportInAnimationFinish,
+    teleportOutAnimationStart = _require8.teleportOutAnimationStart,
+    teleportOutAnimationFinish = _require8.teleportOutAnimationFinish;
 
-var _require8 = require('help'),
-    showLeavingHint = _require8.showLeavingHint,
-    showSpecialHint = _require8.showSpecialHint;
+var _require9 = require('help'),
+    showLeavingHint = _require9.showLeavingHint,
+    showSpecialHint = _require9.showSpecialHint;
 
-var _require9 = require('hud'),
-    getSleepButton = _require9.getSleepButton;
+var _require10 = require('hud'),
+    getSleepButton = _require10.getSleepButton;
 
 // Injects indexes from the integers into non-negative integers.
 
@@ -4770,6 +4773,13 @@ function detonateDebris(state, row, column) {
     return state;
 }
 
+function emitPurchaseMessage(state) {
+    console.log('Purchase the full game to dig deeper.');
+    if (!state.emitPurchaseMessage) state.emitPurchaseMessageTimer = 3000;
+    if (state.emitPurchaseMessageTimer) state.emitPurchaseMessageTimer += -1;
+    return state = _extends({}, state, { emitPurchaseMessage: true });
+}
+
 function exploreCell(state, row, column) {
     var usingExtractor = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
@@ -4885,10 +4895,16 @@ function exploreCell(state, row, column) {
         }
 
         if (!usingExtractor && depth > state.saved.lavaDepth - 11 && depth < Math.floor(state.saved.lavaDepth)) {
-            var delta = Math.floor(state.saved.lavaDepth) - depth;
-            state.saved.lavaDepth += 1.5 / delta;
-            if (1.5 / delta >= 0.1) {
-                playSound(state, 'lowerLava');
+            if (!IS_DEMO) {
+                // only lower lava if the full game is available
+                var delta = Math.floor(state.saved.lavaDepth) - depth;
+                state.saved.lavaDepth += 1.5 / delta;
+                if (1.5 / delta >= 0.1) {
+                    playSound(state, 'lowerLava');
+                }
+            }
+            if (IS_DEMO) {
+                emitPurchaseMessage(state);
             }
         }
     } else {
@@ -5219,7 +5235,7 @@ function gainBonusFuel(state, amount) {
     return updateSave(state, { fuel: fuel, bonusFuelToday: bonusFuelToday });
 }
 
-},{"achievements":3,"gameConstants":8,"help":9,"hud":10,"random":13,"renderRobot":16,"ship":18,"sprites":21,"state":22,"treasures":25}],7:[function(require,module,exports){
+},{"achievements":3,"gameConstants":8,"help":9,"hud":10,"isDemo":11,"random":14,"renderRobot":17,"ship":19,"sprites":22,"state":23,"treasures":26}],7:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -5589,7 +5605,7 @@ function renderHelp(context, state) {
     context.restore();
 }
 
-},{"draw":7,"gameConstants":8,"hud":10,"ship":18,"state":22}],10:[function(require,module,exports){
+},{"draw":7,"gameConstants":8,"hud":10,"ship":19,"state":23}],10:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -5612,7 +5628,8 @@ var Rectangle = require('Rectangle');
 var _require2 = require('draw'),
     drawImage = _require2.drawImage,
     drawRectangle = _require2.drawRectangle,
-    drawText = _require2.drawText;
+    drawText = _require2.drawText,
+    measureText = _require2.measureText;
 
 var _require3 = require('animations'),
     areImagesLoaded = _require3.areImagesLoaded,
@@ -6532,8 +6549,8 @@ function renderHUD(context, state) {
         drawImage(context, crystalFrame.image, crystalFrame, iconRectangle.moveCenterTo(right - scoreWidth - 4 - iconRectangle.width / 2, y - 4));
     }
 
-    // Draw FUEL indicator
     if (!state.title && !state.shop && !state.showAchievements && !state.ship && !state.showOptions && state.saved.finishedIntro && state.outroTime === false) {
+        // Draw FUEL indicator
         var fuelMultiplier = 1 + getAchievementBonus(state, ACHIEVEMENT_GAIN_X_BONUS_FUEL_IN_ONE_DAY) / 100;
         var maxFuel = Math.round(state.saved.maxFuel * fuelMultiplier);
         var fuelBarTarget = new Rectangle(10, 10, Math.min(canvas.width / 2.5, 200 * fuelMultiplier), fuelFrame.height);
@@ -6665,7 +6682,13 @@ function renderPlayButton(context, state) {
     button.render(context, state, button, layoutProperties);
 }
 
-},{"Rectangle":2,"achievements":3,"animations":4,"digging":6,"draw":7,"gameConstants":8,"help":9,"options":12,"scenes":17,"sprites":21,"state":22,"title":24}],11:[function(require,module,exports){
+},{"Rectangle":2,"achievements":3,"animations":4,"digging":6,"draw":7,"gameConstants":8,"help":9,"options":13,"scenes":18,"sprites":22,"state":23,"title":25}],11:[function(require,module,exports){
+"use strict";
+
+var IS_DEMO = true;
+module.exports = { IS_DEMO: IS_DEMO };
+
+},{}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6784,7 +6807,7 @@ var isKeyDown = exports.isKeyDown = function isKeyDown(keyCode) {
     return false;
 };
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -7015,7 +7038,7 @@ function getOptionButtons(state) {
     return [muteSoundsButton, muteMusicButton, showHelpButton, autoscrollButton, skipAnimations, hideParticles, resumeButton, titleButton].concat(_toConsumableArray(window.electronAPI && !state.loadScreen ? [quitButton] : []));
 }
 
-},{"client":5,"hud":10,"sounds":20,"state":22,"suspendedState":23}],13:[function(require,module,exports){
+},{"client":5,"hud":10,"sounds":21,"state":23,"suspendedState":24}],14:[function(require,module,exports){
 "use strict";
 
 var MAX_INT = Math.pow(2, 32);
@@ -7124,7 +7147,7 @@ window.random = {
 
 module.exports = window.random;
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 'use strict';
 
 var _require = require('gameConstants'),
@@ -7358,7 +7381,7 @@ function renderFPS(context) {
 }
 var timeStack = [];
 
-},{"achievements":3,"animations":4,"draw":7,"gameConstants":8,"help":9,"hud":10,"keyboard":11,"renderDigging":15,"scenes":17,"ship":18,"shop":19,"sounds":20,"state":22,"title":24}],15:[function(require,module,exports){
+},{"achievements":3,"animations":4,"draw":7,"gameConstants":8,"help":9,"hud":10,"keyboard":12,"renderDigging":16,"scenes":18,"ship":19,"shop":20,"sounds":21,"state":23,"title":25}],16:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -7388,18 +7411,21 @@ var _require3 = require('draw'),
 var _require4 = require('renderRobot'),
     renderRobot = _require4.renderRobot;
 
-var _require5 = require('digging'),
-    z = _require5.z,
-    canExploreCell = _require5.canExploreCell,
-    getFuelCost = _require5.getFuelCost,
-    isCellRevealed = _require5.isCellRevealed,
-    getFlagValue = _require5.getFlagValue,
-    getCellCenter = _require5.getCellCenter;
+var _require5 = require('isDemo'),
+    IS_DEMO = _require5.IS_DEMO;
 
-var _require6 = require('ship'),
-    getShipPartLocation = _require6.getShipPartLocation,
-    renderShip = _require6.renderShip,
-    renderTransitionShipBackground = _require6.renderTransitionShipBackground;
+var _require6 = require('digging'),
+    z = _require6.z,
+    canExploreCell = _require6.canExploreCell,
+    getFuelCost = _require6.getFuelCost,
+    isCellRevealed = _require6.isCellRevealed,
+    getFlagValue = _require6.getFlagValue,
+    getCellCenter = _require6.getCellCenter;
+
+var _require7 = require('ship'),
+    getShipPartLocation = _require7.getShipPartLocation,
+    renderShip = _require7.renderShip,
+    renderTransitionShipBackground = _require7.renderTransitionShipBackground;
 
 var lavaPattern = null;
 function renderDigging(context, state) {
@@ -7510,6 +7536,16 @@ function renderDigging(context, state) {
         var size = 15;
         if (!(depth % 50)) size = 30;else if (!(depth % 10)) size = 20;
         drawText(context, depth + ' -', 10, y, { fillStyle: '#FFF', textAlign: 'left', textBaseline: 'middle', size: size });
+        if (IS_DEMO && depth <= state.displayLavaDepth && depth + 5 > state.displayLavaDepth) {
+            context.save();
+            context.globalAlpha = 1;
+            var alert = {
+                label: 'Purchase the full game to\nlower the lava and dig deeper.',
+                textProperties: { fillStyle: 'white', textAlign: 'center', textBaseline: 'middle', size: 36 }
+            };
+            drawText(context, alert.label, canvas.width / 2, y, alert.textProperties);
+            context.restore();
+        }
         y += 5 * ROW_HEIGHT / 2;
         depth += 5;
     }
@@ -7788,7 +7824,7 @@ module.exports = {
     renderDigging: renderDigging
 };
 
-},{"Rectangle":2,"animations":4,"digging":6,"draw":7,"gameConstants":8,"random":13,"renderRobot":16,"ship":18}],16:[function(require,module,exports){
+},{"Rectangle":2,"animations":4,"digging":6,"draw":7,"gameConstants":8,"isDemo":11,"random":14,"renderRobot":17,"ship":19}],17:[function(require,module,exports){
 'use strict';
 
 var _require = require('gameConstants'),
@@ -7919,7 +7955,7 @@ function renderRobot(context, state) {
     context.restore();
 }
 
-},{"Rectangle":2,"animations":4,"digging":6,"draw":7,"gameConstants":8}],17:[function(require,module,exports){
+},{"Rectangle":2,"animations":4,"digging":6,"draw":7,"gameConstants":8}],18:[function(require,module,exports){
 'use strict';
 
 var Rectangle = require('Rectangle');
@@ -8393,7 +8429,7 @@ function renderCreditsCard(context, state, title, names, alpha) {
     context.restore();
 }
 
-},{"Rectangle":2,"animations":4,"draw":7,"gameConstants":8,"hud":10,"ship":18,"sprites":21,"state":22}],18:[function(require,module,exports){
+},{"Rectangle":2,"animations":4,"draw":7,"gameConstants":8,"hud":10,"ship":19,"sprites":22,"state":23}],19:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -8636,7 +8672,7 @@ var shipPartSprite = {
     }
 };
 
-},{"Rectangle":2,"animations":4,"digging":6,"draw":7,"gameConstants":8,"hud":10,"random":13,"sprites":21,"state":22}],19:[function(require,module,exports){
+},{"Rectangle":2,"animations":4,"digging":6,"draw":7,"gameConstants":8,"hud":10,"random":14,"sprites":22,"state":23}],20:[function(require,module,exports){
 'use strict';
 
 var Rectangle = require('Rectangle');
@@ -8670,7 +8706,7 @@ function renderShop(context, state) {
     drawImage(context, robotFrame.image, robotFrame, new Rectangle(robotFrame).moveCenterTo(shopRectangle.left + shopRectangle.width / 2, shopRectangle.top + shopRectangle.height / 2));
 }
 
-},{"Rectangle":2,"animations":4,"draw":7,"hud":10,"ship":18}],20:[function(require,module,exports){
+},{"Rectangle":2,"animations":4,"draw":7,"hud":10,"ship":19}],21:[function(require,module,exports){
 'use strict';
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
@@ -9188,7 +9224,7 @@ module.exports = {
     isPlayingTrack: isPlayingTrack
 };
 
-},{"howler":1}],21:[function(require,module,exports){
+},{"howler":1}],22:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -9503,7 +9539,7 @@ var _require5 = require('digging'),
     gainCrystals = _require5.gainCrystals,
     detonateDebris = _require5.detonateDebris;
 
-},{"Rectangle":2,"animations":4,"digging":6,"draw":7,"gameConstants":8,"state":22}],22:[function(require,module,exports){
+},{"Rectangle":2,"animations":4,"digging":6,"draw":7,"gameConstants":8,"state":23}],23:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -9876,7 +9912,7 @@ function applyActions(state, actions) {
     return state;
 }
 
-},{"Rectangle":2,"achievements":3,"animations":4,"digging":6,"gameConstants":8,"help":9,"hud":10,"random":13,"scenes":17,"ship":18,"sounds":20}],23:[function(require,module,exports){
+},{"Rectangle":2,"achievements":3,"animations":4,"digging":6,"gameConstants":8,"help":9,"hud":10,"random":14,"scenes":18,"ship":19,"sounds":21}],24:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -10037,7 +10073,7 @@ function applySuspendedState(state, suspendedState) {
     return state;
 }
 
-},{"digging":6,"gameConstants":8}],24:[function(require,module,exports){
+},{"digging":6,"gameConstants":8}],25:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -10094,6 +10130,9 @@ var _require8 = require('achievements'),
 
 var _require9 = require('suspendedState'),
     applySuspendedState = _require9.applySuspendedState;
+
+var _require10 = require('isDemo'),
+    IS_DEMO = _require10.IS_DEMO;
 
 var titleFrame = r(100, 126, { image: requireImage('gfx/logotall.png') });
 // const fileFrame = r(150, 125, {image: requireImage('gfx/monitor.png')});
@@ -10414,6 +10453,10 @@ function renderTitle(context, state) {
     scale = Math.floor(2 * (canvas.height / 3) / titleFrame.height);
     target = new Rectangle(titleFrame).scale(scale).moveTo((canvas.width - scale * titleFrame.width) / 2, 50);
     drawImage(context, titleFrame.image, titleFrame, target);
+    if (IS_DEMO) {
+        var padding = canvas.width / 20;
+        drawText(context, 'DEMO', padding, canvas.height - padding, { fillStyle: 'white', textAlign: 'left', textBaseline: 'bottom', size: padding * 3 });
+    }
 }
 function drawShipPanels(context, state) {
     var zoom = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
@@ -10449,7 +10492,7 @@ function renderLoadScreen(context, state) {
     }
 }
 
-},{"Rectangle":2,"achievements":3,"animations":4,"draw":7,"gameConstants":8,"hud":10,"ship":18,"sprites":21,"state":22,"suspendedState":23}],25:[function(require,module,exports){
+},{"Rectangle":2,"achievements":3,"animations":4,"draw":7,"gameConstants":8,"hud":10,"isDemo":11,"ship":19,"sprites":22,"state":23,"suspendedState":24}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10681,4 +10724,4 @@ var diffuserSprite = {
     }
 };
 
-},{"Rectangle":2,"achievements":3,"animations":4,"digging":6,"draw":7,"gameConstants":8,"random":13,"sprites":21,"state":22}]},{},[5]);
+},{"Rectangle":2,"achievements":3,"animations":4,"digging":6,"draw":7,"gameConstants":8,"random":14,"sprites":22,"state":23}]},{},[5]);

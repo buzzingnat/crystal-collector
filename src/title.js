@@ -12,6 +12,7 @@ const { renderShipBackground, renderShip, shipPartAnimations } = require('ship')
 const { getButtonColor, getLayoutProperties, renderButtonBackground, renderBasicButton } = require('hud');
 const { achievementAnimation, getAchievementPercent, initializeAchievements } = require('achievements');
 const { applySuspendedState } = require('suspendedState');
+const { IS_DEMO } = require('isDemo');
 
 const titleFrame = r(100, 126, {image: requireImage('gfx/logotall.png')});
 // const fileFrame = r(150, 125, {image: requireImage('gfx/monitor.png')});
@@ -315,6 +316,12 @@ function renderTitle(context, state) {
     target = new Rectangle(titleFrame).scale(scale)
         .moveTo((canvas.width - scale * titleFrame.width) / 2, 50)
     drawImage(context, titleFrame.image, titleFrame, target);
+    if (IS_DEMO) {
+        const padding = canvas.width / 20;
+        drawText(context, 'DEMO', padding, canvas.height - padding,
+            {fillStyle: 'white', textAlign: 'left', textBaseline: 'bottom', size: padding * 3}
+        );
+    }
 }
 function drawShipPanels(context, state, zoom = 0) {
     let scale, target;

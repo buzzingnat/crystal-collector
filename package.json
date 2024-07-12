@@ -22,8 +22,12 @@
     "start": "npm-run-all -p -r buildAndWatch server",
     "buildAndWatch": "node scripts/build-src-watch.js",
     "build": "node scripts/build-src-once.js",
+    "buildDemo": "npm-run-all setDemoTrue build",
+    "buildFullGame": "npm-run-all setDemoFalse build",
     "server": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "setDemoTrue": "node scripts/set-demo-true.js",
+    "setDemoFalse": "node scripts/set-demo-false.js"
   },
   "author": "Chris Brewer",
   "license": "ISC"
