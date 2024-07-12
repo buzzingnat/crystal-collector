@@ -6,7 +6,7 @@ module.exports = {
     getTitleHUDButtons,
     renderTitle,
 };
-const { getNewSaveSlot, nextDay, resumeDigging, updateSave } = require('state');
+const { playSound, getNewSaveSlot, nextDay, resumeDigging, updateSave } = require('state');
 const { crystalFrame } = require('sprites');
 const { renderShipBackground, renderShip, shipPartAnimations } = require('ship');
 const { getButtonColor, getLayoutProperties, renderButtonBackground, renderBasicButton } = require('hud');
@@ -40,6 +40,7 @@ const quitGameButton = {
 const chooseFileButton = {
     label: 'Start',
     onClick(state) {
+        playSound(state, 'select');
         return {...state, loadScreen: state.time};
     },
     render: renderBasicButton,
@@ -134,6 +135,7 @@ const fileButton = {
         );
     },
     onClick(state) {
+        playSound(state, 'select');
         if (this.p < 1) return state;
         const saveData = this.getSaveData(state);
         state.saveSlot = this.index;
@@ -222,6 +224,7 @@ const deleteFileButton = {
         context.restore();
     },
     onClick(state) {
+        playSound(state, 'flag');
         return {...state, deleteSlot: this.index};
     },
     resize() {
@@ -241,6 +244,7 @@ const confirmDeleteButton = {
     activeColor: COLOR_BAD,
     label: 'Delete',
     onClick(state) {
+        playSound(state, 'select');
         state.saveSlots[state.deleteSlot] = undefined;
         return {...state, deleteSlot: false};
     },
@@ -255,6 +259,7 @@ const confirmDeleteButton = {
 const cancelDeleteButton = {
     label: 'Cancel',
     onClick(state) {
+        playSound(state, 'select');
         return {...state, deleteSlot: false};
     },
     render: renderBasicButton,

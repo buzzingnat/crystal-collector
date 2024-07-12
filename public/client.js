@@ -6488,7 +6488,7 @@ function getHUDButtons(state) {
         return [closeButton].concat(standardButtons);
     }
     if (state.showOptions) {
-        return [closeButton].concat(_toConsumableArray(getOptionButtons(state)), standardButtons);
+        return [].concat(_toConsumableArray(getOptionButtons(state)), standardButtons);
     }
     if (state.title) {
         return getTitleHUDButtons(state);
@@ -6817,6 +6817,21 @@ var _require4 = require('sounds'),
 var _require5 = require('client'),
     commitSaveToLocalStorage = _require5.commitSaveToLocalStorage;
 
+var saveGame = function saveGame(state) {
+    if (!state.ship && !state.shop) {
+        state = updateSave(state, { suspendedState: createSuspendedState(state) });
+        commitSaveToLocalStorage(state);
+    }
+    return state;
+};
+
+var showTitle = function showTitle(state) {
+    return _extends({}, state, { bgmTime: state.time,
+        title: state.time, showOptions: false, saveSlot: false,
+        robot: false
+    });
+};
+
 var optionIndex = 0;
 var optionToggleButton = {
     resize: function resize(_ref) {
@@ -6859,6 +6874,7 @@ var muteMusicButton = _extends({
 
     render: renderBasicButton,
     onClick: function onClick(state) {
+        playSound(state, 'select');
         var muteMusic = !state.saved.muteMusic;
         if (muteMusic) muteTrack();else unmuteTrack();
         return updateSave(state, { muteMusic: muteMusic });
@@ -6874,6 +6890,7 @@ var showHelpButton = _extends({
 
     render: renderBasicButton,
     onClick: function onClick(state) {
+        playSound(state, 'select');
         var hideHelp = !state.saved.hideHelp;
         return updateSave(state, { hideHelp: hideHelp });
     }
@@ -6888,6 +6905,7 @@ var autoscrollButton = _extends({
 
     render: renderBasicButton,
     onClick: function onClick(state) {
+        playSound(state, 'select');
         var disableAutoscroll = !state.saved.disableAutoscroll;
         return updateSave(state, { disableAutoscroll: disableAutoscroll });
     }
@@ -6902,6 +6920,7 @@ var hideParticles = _extends({
 
     render: renderBasicButton,
     onClick: function onClick(state) {
+        playSound(state, 'select');
         var hideParticles = !state.saved.hideParticles;
         return updateSave(state, { hideParticles: hideParticles });
     }
@@ -6916,22 +6935,19 @@ var skipAnimations = _extends({
 
     render: renderBasicButton,
     onClick: function onClick(state) {
+        playSound(state, 'select');
         var skipAnimations = !state.saved.skipAnimations;
         return updateSave(state, { skipAnimations: skipAnimations });
     }
 }, optionToggleButton, {
     optionIndex: optionIndex++
 });
-var suspendButton = {
-    label: 'Suspend',
+var resumeButton = {
+    label: 'Resume',
     render: renderBasicButton,
     onClick: function onClick(state) {
-        state = updateSave(state, { suspendedState: createSuspendedState(state) });
-        commitSaveToLocalStorage(state);
-        return _extends({}, state, { bgmTime: state.time,
-            title: state.time, showOptions: false, saveSlot: false,
-            robot: false
-        });
+        playSound(state, 'select');
+        return _extends({}, state, { showAchievements: false, showOptions: false });
     },
     resize: function resize(_ref2) {
         var height = _ref2.height,
@@ -6939,22 +6955,24 @@ var suspendButton = {
             buttonWidth = _ref2.buttonWidth,
             buttonHeight = _ref2.buttonHeight;
 
+        // This is duplicating the logic for the y position of the option buttons
+        // and assuming this should display as a fourth row.
+        var y = 3;
         this.height = buttonHeight;
         this.width = buttonWidth * 2;
-        this.top = height / 2 - this.height * (3.5 - 1.2 * 3.5);
+        this.top = height / 2 - this.height * (3.5 - 1.2 * y);
         this.left = Math.round((width - this.width) / 2);
     },
 
     optionIndex: optionIndex++
 };
-var titleButton = {
-    label: 'Title',
+var quitButton = {
+    label: 'Quit',
     render: renderBasicButton,
     onClick: function onClick(state) {
-        return _extends({}, state, { bgmTime: state.time,
-            title: state.time, showOptions: false, saveSlot: false,
-            robot: false
-        });
+        state = saveGame(state);
+        window.electronAPI.setCloseButton(true);
+        return _extends({}, state);
     },
     resize: function resize(_ref3) {
         var height = _ref3.height,
@@ -6963,16 +6981,38 @@ var titleButton = {
             buttonHeight = _ref3.buttonHeight;
 
         this.height = buttonHeight;
-        this.width = buttonWidth * 2;
-        this.top = height / 2 - this.height * (3.5 - 1.2 * 4.5);
-        this.left = Math.round((width - this.width) / 2);
+        this.width = buttonWidth;
+        this.top = height / 2 - this.height * (3.5 - 1.2 * 5);
+        this.left = Math.round((width - this.width) / 2) - this.width - Math.round(this.width / 20);
+    },
+
+    optionIndex: optionIndex++
+};
+var titleButton = {
+    label: 'Title',
+    render: renderBasicButton,
+    onClick: function onClick(state) {
+        playSound(state, 'select');
+        state = saveGame(state);
+        return showTitle(state);
+    },
+    resize: function resize(_ref4) {
+        var height = _ref4.height,
+            width = _ref4.width,
+            buttonWidth = _ref4.buttonWidth,
+            buttonHeight = _ref4.buttonHeight;
+
+        this.height = buttonHeight;
+        this.width = buttonWidth;
+        this.top = height / 2 - this.height * (3.5 - 1.2 * 5);
+        this.left = Math.round((width - this.width) / 2) + this.width + Math.round(this.width / 20);
     },
 
     optionIndex: optionIndex++
 };
 
 function getOptionButtons(state) {
-    return [muteSoundsButton, muteMusicButton, showHelpButton, autoscrollButton, skipAnimations, hideParticles].concat(_toConsumableArray(!state.ship && !state.shop ? [suspendButton] : []), [titleButton]);
+    return [muteSoundsButton, muteMusicButton, showHelpButton, autoscrollButton, skipAnimations, hideParticles, resumeButton, titleButton].concat(_toConsumableArray(window.electronAPI && !state.loadScreen ? [quitButton] : []));
 }
 
 },{"client":5,"hud":10,"sounds":20,"state":22,"suspendedState":23}],13:[function(require,module,exports){
@@ -10027,6 +10067,7 @@ module.exports = {
 };
 
 var _require4 = require('state'),
+    playSound = _require4.playSound,
     getNewSaveSlot = _require4.getNewSaveSlot,
     nextDay = _require4.nextDay,
     resumeDigging = _require4.resumeDigging,
@@ -10087,6 +10128,7 @@ var quitGameButton = {
 var chooseFileButton = {
     label: 'Start',
     onClick: function onClick(state) {
+        playSound(state, 'select');
         return _extends({}, state, { loadScreen: state.time });
     },
 
@@ -10173,6 +10215,7 @@ var fileButton = {
         drawText(context, saveData.score.abbreviate(), left + 5 + iconRectangle.width, top + halfHeight * 5, { fillStyle: COLOR_CRYSTAL, strokeStyle: 'white', textAlign: 'left', textBaseline: 'middle', size: size, measure: true });
     },
     onClick: function onClick(state) {
+        playSound(state, 'select');
         if (this.p < 1) return state;
         var saveData = this.getSaveData(state);
         state.saveSlot = this.index;
@@ -10267,6 +10310,7 @@ var deleteFileButton = {
         context.restore();
     },
     onClick: function onClick(state) {
+        playSound(state, 'flag');
         return _extends({}, state, { deleteSlot: this.index });
     },
     resize: function resize() {
@@ -10287,6 +10331,7 @@ var confirmDeleteButton = {
     activeColor: COLOR_BAD,
     label: 'Delete',
     onClick: function onClick(state) {
+        playSound(state, 'select');
         state.saveSlots[state.deleteSlot] = undefined;
         return _extends({}, state, { deleteSlot: false });
     },
@@ -10307,6 +10352,7 @@ var confirmDeleteButton = {
 var cancelDeleteButton = {
     label: 'Cancel',
     onClick: function onClick(state) {
+        playSound(state, 'select');
         return _extends({}, state, { deleteSlot: false });
     },
 

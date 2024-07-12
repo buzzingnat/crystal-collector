@@ -806,7 +806,7 @@ function getHUDButtons(state) {
         return [closeButton, ...standardButtons];
     }
     if (state.showOptions) {
-        return [closeButton, ...getOptionButtons(state), ...standardButtons];
+        return [...getOptionButtons(state), ...standardButtons];
     }
     if (state.title) {
         return getTitleHUDButtons(state);
