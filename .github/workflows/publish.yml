@@ -1,5 +1,5 @@
-# from: https://trashmoon.com/blog/2022/automating-steam-releases-for-html-games-with-electron-forge-and-github-actions/
 name: Build/release
+# from: https://trashmoon.com/blog/2022/automating-steam-releases-for-html-games-with-electron-forge-and-github-actions/
 
 # Run this workflow whenever a tag that starts with v is pushed to github.
 # to add a tag, do this before committing and pushing: $ git tag -a v1.4 -m "my version 1.4"

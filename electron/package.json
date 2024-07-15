@@ -1,7 +1,7 @@
 {
   "name": "GemBlast",
   "productName": "Gem Blast",
-  "version": "0.1.02-alpha",
+  "version": "0.1.03-alpha",
   "description": "Rogue-like Puzzle Mining Game",
   "main": "src/index.js",
   "scripts": {
