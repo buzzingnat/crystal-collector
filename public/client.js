@@ -5628,8 +5628,7 @@ var Rectangle = require('Rectangle');
 var _require2 = require('draw'),
     drawImage = _require2.drawImage,
     drawRectangle = _require2.drawRectangle,
-    drawText = _require2.drawText,
-    measureText = _require2.measureText;
+    drawText = _require2.drawText;
 
 var _require3 = require('animations'),
     areImagesLoaded = _require3.areImagesLoaded,
@@ -6685,7 +6684,7 @@ function renderPlayButton(context, state) {
 },{"Rectangle":2,"achievements":3,"animations":4,"digging":6,"draw":7,"gameConstants":8,"help":9,"options":13,"scenes":18,"sprites":22,"state":23,"title":25}],11:[function(require,module,exports){
 "use strict";
 
-var IS_DEMO = true;
+var IS_DEMO = false;
 module.exports = { IS_DEMO: IS_DEMO };
 
 },{}],12:[function(require,module,exports){
