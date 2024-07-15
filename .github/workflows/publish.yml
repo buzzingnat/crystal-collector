@@ -3,7 +3,7 @@ name: Build/release
 
 # Run this workflow whenever a tag that starts with v is pushed to github.
 # to add a tag, do this before committing and pushing: $ git tag -a v1.4 -m "my version 1.4"
-on: [push]
+on: # [push]
   push:
     tags:
       - 'v*'

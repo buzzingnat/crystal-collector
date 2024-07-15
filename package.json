@@ -1,6 +1,6 @@
 {
   "name": "CrystalCollector",
-  "version": "0.1.03-alpha",
+  "version": "0.1.04-alpha",
   "description": "Rogue-like Puzzle Mining Game",
   "main": "index.js",
   "dependencies": {
