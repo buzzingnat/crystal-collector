@@ -5649,7 +5649,8 @@ module.exports = {
     getLayoutProperties: getLayoutProperties,
     getButtonColor: getButtonColor,
     getSleepButton: getSleepButton,
-    getHelpButton: getHelpButton
+    getHelpButton: getHelpButton,
+    getOptionsButton: getOptionsButton
 };
 
 Number.prototype.abbreviate = function () {
@@ -5846,6 +5847,10 @@ var optionsButton = {
         this.left = width - padding - this.width;
     }
 };
+function getOptionsButton() {
+    return optionsButton;
+}
+
 var achievementButton = {
     render: function render(context, state, button) {
         context.save();
@@ -6499,14 +6504,14 @@ function getHUDButtons(state) {
     if (state.outroTime !== false) {
         return state.outroTime > endingSequenceDuration ? [continueButton] : [];
     }
-    if (state.showAchievements) {
-        return [closeButton].concat(standardButtons);
-    }
     if (state.showOptions) {
         return [].concat(_toConsumableArray(getOptionButtons(state)), standardButtons);
     }
     if (state.title) {
         return getTitleHUDButtons(state);
+    }
+    if (state.showAchievements) {
+        return [closeButton].concat(standardButtons);
     }
     if (state.ship) {
         if (state.restart) {
@@ -7033,7 +7038,7 @@ var titleButton = {
 };
 
 function getOptionButtons(state) {
-    return [muteSoundsButton, muteMusicButton, showHelpButton, autoscrollButton, skipAnimations, hideParticles, resumeButton, titleButton].concat(_toConsumableArray(window.electronAPI && !state.loadScreen ? [quitButton] : []));
+    return [muteSoundsButton, muteMusicButton, showHelpButton, autoscrollButton, skipAnimations, hideParticles, resumeButton].concat(_toConsumableArray(state.title ? [] : [titleButton]), _toConsumableArray(window.electronAPI && !state.loadScreen ? [quitButton] : []));
 }
 
 },{"client":5,"hud":10,"sounds":21,"state":23,"suspendedState":24}],14:[function(require,module,exports){
@@ -7329,14 +7334,14 @@ function render(context, state) {
     }
     if (state.outroTime !== false) {
         renderOutro(context, state);
+    } else if (state.showOptions) {
+        renderSpaceBackground(context, state);
     } else if (state.title) {
         renderTitle(context, state);
     } else if (!state.saved.finishedIntro) {
         renderIntro(context, state);
     } else if (state.showAchievements) {
         renderAchievements(context, state);
-    } else if (state.showOptions) {
-        renderSpaceBackground(context, state);
     } else if (state.ship) {
         renderShipScene(context, state);
     } else if (state.shop) {
@@ -8572,6 +8577,7 @@ function renderTransitionShipBackground(context, state) {
     context.restore();
 }
 function renderShip(context, state) {
+    if (state.showOptions) console.log('renderShip');
     var topTarget = getTopTarget();
     var shipBaseHeight = Math.min(canvas.height / 2, canvas.height / 2 * (topTarget * 2 / 3 - state.camera.top) / (-topTarget / 3));
     var frame = getFrame(shipAnimation, state.time);
@@ -8608,6 +8614,7 @@ function renderShip(context, state) {
     );*/
 }
 function renderShipScene(context, state) {
+    if (state.showOptions) console.log('renderShipScene');
     renderShipBackground(context, state);
     renderShip(context, state);
     var frame = getFrame(warpdriveAnimation, 0);
@@ -10129,8 +10136,11 @@ var _require8 = require('achievements'),
 var _require9 = require('suspendedState'),
     applySuspendedState = _require9.applySuspendedState;
 
-var _require10 = require('isDemo'),
-    IS_DEMO = _require10.IS_DEMO;
+var _require10 = require('hud'),
+    getOptionsButton = _require10.getOptionsButton;
+
+var _require11 = require('isDemo'),
+    IS_DEMO = _require11.IS_DEMO;
 
 var titleFrame = r(100, 126, { image: requireImage('gfx/logotall.png') });
 // const fileFrame = r(150, 125, {image: requireImage('gfx/monitor.png')});
@@ -10165,6 +10175,8 @@ var quitGameButton = {
 var chooseFileButton = {
     label: 'Start',
     onClick: function onClick(state) {
+        // window.steamAPI.steamLogUser();
+        // window.steamAPI.activateOverlay();
         playSound(state, 'select');
         return _extends({}, state, { loadScreen: state.time });
     },
@@ -10408,17 +10420,10 @@ var cancelDeleteButton = {
 };
 
 function getTitleHUDButtons(state) {
-    //     {
-    //     "chooseFileButton": {
-    //         "label": "Start",
-    //         "height": 91,
-    //         "width": 228,
-    //         "top": 854.5,
-    //         "left": 568.5,
-    //         "lastResized": 1720624857362
-    //     }
-    // }
-    if (window.electronAPI && !state.loadScreen) return [chooseFileButton, quitGameButton];
+    if (window.electronAPI && !state.loadScreen) {
+        var tempOptionsButton = getOptionsButton();
+        return [chooseFileButton, quitGameButton, tempOptionsButton];
+    }
     if (!state.loadScreen) return [chooseFileButton];
     if (state.deleteSlot !== false) return [confirmDeleteButton, cancelDeleteButton];
     return [].concat(_toConsumableArray(fileButtons), _toConsumableArray(deleteFileButtons));

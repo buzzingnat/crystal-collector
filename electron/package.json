@@ -5,18 +5,24 @@
   "description": "Rogue-like Puzzle Mining Game",
   "main": "src/index.js",
   "scripts": {
+    "addMacSteamAppId": "cd \"out/Gem Blast-darwin-arm64/Gem Blast.app/Contents/MacOS\" && touch steam_appid.txt && printf '2560850' > steam_appid.txt && cd \"../../../../../\" && pwd",
     "start": "electron-forge start",
+    "startDebug": "electron-forge start --inspect-electron",
     "package": "electron-forge package",
     "prepare": "cd ../ && node scripts/set-demo-false.js && node scripts/build-src-once.js && cd electron && node ../scripts/prepare-electron.js",
     "prepareDemo": "cd ../ && node scripts/set-demo-true.js && node scripts/build-src-once.js && cd electron && node ../scripts/prepare-electron.js",
     "runLocally": "npm-run-all prepare package start",
+    "runSteamLocally": "npm-run-all prepare package addMacSteamAppId startDebug",
     "runDemoLocally": "npm-run-all prepareDemo package start",
     "make": "electron-forge make"
   },
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "app-icons/icon"
+        "icon": "app-icons/icon",
+        "asar": {
+          "unpackDir": "node_modules/steamworks.js/dist/**/*"
+        }
       },
       "makers": [
         {
@@ -34,6 +40,7 @@
   "author": "Hillary Spratt",
   "license": "ISC",
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.1"
+    "electron-squirrel-startup": "^1.0.1",
+    "steamworks.js": "^0.3.2"
   }
 }

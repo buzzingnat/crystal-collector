@@ -12,6 +12,7 @@ const { renderShipBackground, renderShip, shipPartAnimations } = require('ship')
 const { getButtonColor, getLayoutProperties, renderButtonBackground, renderBasicButton } = require('hud');
 const { achievementAnimation, getAchievementPercent, initializeAchievements } = require('achievements');
 const { applySuspendedState } = require('suspendedState');
+const { getOptionsButton } = require('hud');
 const { IS_DEMO } = require('isDemo');
 
 const titleFrame = r(100, 126, {image: requireImage('gfx/logotall.png')});
@@ -41,6 +42,8 @@ const quitGameButton = {
 const chooseFileButton = {
     label: 'Start',
     onClick(state) {
+        // window.steamAPI.steamLogUser();
+        // window.steamAPI.activateOverlay();
         playSound(state, 'select');
         return {...state, loadScreen: state.time};
     },
@@ -273,17 +276,10 @@ const cancelDeleteButton = {
 };
 
 function getTitleHUDButtons(state) {
-//     {
-//     "chooseFileButton": {
-//         "label": "Start",
-//         "height": 91,
-//         "width": 228,
-//         "top": 854.5,
-//         "left": 568.5,
-//         "lastResized": 1720624857362
-//     }
-// }
-    if (window.electronAPI && !state.loadScreen) return [chooseFileButton, quitGameButton];
+    if (window.electronAPI && !state.loadScreen) {
+        const tempOptionsButton = getOptionsButton();
+        return [chooseFileButton, quitGameButton, tempOptionsButton];
+    }
     if (!state.loadScreen) return [chooseFileButton];
     if (state.deleteSlot !== false) return [confirmDeleteButton, cancelDeleteButton];
     return [...fileButtons, ...deleteFileButtons];

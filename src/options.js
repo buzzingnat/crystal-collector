@@ -189,6 +189,6 @@ function getOptionButtons(state) {
         showHelpButton, autoscrollButton,
         skipAnimations, hideParticles,
                 resumeButton,
-        titleButton, ...((window.electronAPI && !state.loadScreen) ? [quitButton] : []),
+        ...(state.title ? [] : [titleButton]), ...((window.electronAPI && !state.loadScreen) ? [quitButton] : []),
     ];
 }
