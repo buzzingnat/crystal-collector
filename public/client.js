@@ -3661,6 +3661,12 @@ function getAchievementBonus(state, key) {
     return bonusValue >= 0 && achievementsData[key].bonusValues[bonusValue];
 }
 
+function getAchievementStatSteam(state, key) {
+    window.steamAPI.steamFetchSteamAchievements(key);
+    // const achievementStats = state.saved.achievementStats || {};
+    // return achievementStats[key] || false;
+}
+
 // Sets state.achievements and state.saved.achievementStats if necessary.
 function initializeAchievements(state) {
     state = _extends({}, state, { achievements: {} });
@@ -4128,6 +4134,7 @@ var update = function update() {
         state = getNewState();
         state.saved.muteMusic = savedState.muteMusic;
         state.saved.muteSounds = savedState.muteSounds;
+        state.saved.fullScreen = window.electronAPI ? true : false;
         state.saveSlots = savedState.saveSlots;
         state.lastResized = Date.now();
         state.context = context;
@@ -6968,6 +6975,22 @@ var skipAnimations = _extends({
 }, optionToggleButton, {
     optionIndex: optionIndex++
 });
+var fullScreenButton = _extends({
+    getLabel: function getLabel(state) {
+        if (state.saved.fullScreen) return 'Fullscreen Off';
+        return 'Fullscreen On';
+    },
+
+    render: renderBasicButton,
+    onClick: function onClick(state) {
+        playSound(state, 'select');
+        if (state.saved.fullScreen) window.electronAPI.setWindowedButton(true);else window.electronAPI.setFullscreenButton(true);
+        var fullScreen = !state.saved.fullScreen;
+        return updateSave(state, { fullScreen: fullScreen });
+    }
+}, optionToggleButton, {
+    optionIndex: optionIndex++
+});
 var resumeButton = {
     label: 'Resume',
     render: renderBasicButton,
@@ -6982,8 +7005,9 @@ var resumeButton = {
             buttonHeight = _ref2.buttonHeight;
 
         // This is duplicating the logic for the y position of the option buttons
-        // and assuming this should display as a fourth row.
-        var y = 3;
+        // and assuming this should display as a fourth row in browser
+        // and fifth row in electron.
+        var y = window.electronAPI ? 4 : 3;
         this.height = buttonHeight;
         this.width = buttonWidth * 2;
         this.top = height / 2 - this.height * (3.5 - 1.2 * y);
@@ -7038,7 +7062,7 @@ var titleButton = {
 };
 
 function getOptionButtons(state) {
-    return [muteSoundsButton, muteMusicButton, showHelpButton, autoscrollButton, skipAnimations, hideParticles, resumeButton].concat(_toConsumableArray(state.title ? [] : [titleButton]), _toConsumableArray(window.electronAPI && !state.loadScreen ? [quitButton] : []));
+    return [muteSoundsButton, muteMusicButton, showHelpButton, autoscrollButton, skipAnimations, hideParticles].concat(_toConsumableArray(window.electronAPI ? [fullScreenButton] : []), [resumeButton], _toConsumableArray(state.title ? [] : [titleButton]), _toConsumableArray(window.electronAPI && !state.loadScreen ? [quitButton] : []));
 }
 
 },{"client":5,"hud":10,"sounds":21,"state":23,"suspendedState":24}],14:[function(require,module,exports){
@@ -8577,7 +8601,7 @@ function renderTransitionShipBackground(context, state) {
     context.restore();
 }
 function renderShip(context, state) {
-    if (state.showOptions) console.log('renderShip');
+    if (state.showOptions) console.log('Warning, renderShip() should not run during options.');
     var topTarget = getTopTarget();
     var shipBaseHeight = Math.min(canvas.height / 2, canvas.height / 2 * (topTarget * 2 / 3 - state.camera.top) / (-topTarget / 3));
     var frame = getFrame(shipAnimation, state.time);
@@ -8614,7 +8638,7 @@ function renderShip(context, state) {
     );*/
 }
 function renderShipScene(context, state) {
-    if (state.showOptions) console.log('renderShipScene');
+    if (state.showOptions) console.log('Warning, renderShipScene() should not run during options.');
     renderShipBackground(context, state);
     renderShip(context, state);
     var frame = getFrame(warpdriveAnimation, 0);
@@ -10175,8 +10199,12 @@ var quitGameButton = {
 var chooseFileButton = {
     label: 'Start',
     onClick: function onClick(state) {
-        // window.steamAPI.steamLogUser();
+        window.steamAPI.steamLogUser();
         // window.steamAPI.activateOverlay();
+        // window.steamAPI.steamSetSteamAchievements('ACHIEVEMENT_COLLECT_500_CRYSTALS');
+        // setTimeout(() => {
+        //     window.steamAPI.steamFetchSteamAchievements('ACHIEVEMENT_COLLECT_500_CRYSTALS')
+        // }, 2000);
         playSound(state, 'select');
         return _extends({}, state, { loadScreen: state.time });
     },
@@ -10193,11 +10221,8 @@ var chooseFileButton = {
         this.top = 5 * height / 6 - this.height / 2;
         this.left = (width - this.width) / 2;
         if (window.electronAPI) {
-            // shift start button up to make room for quit button
-            // this.top = this.top - this.height / 4;
             var padding = buttonHeight / 10;
             this.top = height - 2 * buttonHeight - 2 * padding;
-            console.log('make room for quit button below start button');
         }
     }
 };

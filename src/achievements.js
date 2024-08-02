@@ -161,6 +161,12 @@ function getAchievementBonus(state, key) {
     return bonusValue >= 0 && achievementsData[key].bonusValues[bonusValue];
 }
 
+function getAchievementStatSteam(state, key) {
+    window.steamAPI.steamFetchSteamAchievements(key);
+    // const achievementStats = state.saved.achievementStats || {};
+    // return achievementStats[key] || false;
+}
+
 // Sets state.achievements and state.saved.achievementStats if necessary.
 function initializeAchievements(state) {
     state = {...state, achievements: {}};

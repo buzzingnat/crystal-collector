@@ -4,6 +4,7 @@ const path = require('path');
 const useSteam = require('./isSteam');
 let steamworks;
 let client;
+let mainWindow;
 
 if (useSteam) {
   steamworks = require('steamworks.js');
@@ -12,29 +13,69 @@ if (useSteam) {
   try {
     client = steamworks.init();
   } catch (error) {
-    console.log(error);
-    client = steamworks.init(480);
-    console.log('\n\n******\nNow playing as the demo app Spacewar\n******\n\n');
+    console.log({error});
+    client = steamworks.init(2560850);
+    console.log('\n\n******\nForced app id\n******\n\n');
   }
 
   // console.log("client", client)
   console.log(client.localplayer.getName())
   // /!\ Those 3 lines are important for Steam compatibility!
-  app.commandLine.appendSwitch("in-process-gpu")
-  app.commandLine.appendSwitch("disable-direct-composition")
-  app.allowRendererProcessReuse = false
+  // app.commandLine.appendSwitch("in-process-gpu")
+  // app.commandLine.appendSwitch("disable-direct-composition")
+  // app.allowRendererProcessReuse = false
 }
 
-const handleSteamLogUser = async (event) => {
+const isSteam = (useSteam) => {
   if (!useSteam) {
-    return console.log('STEAM IS NOT ENABLED');
+    console.log('STEAM IS NOT ENABLED');
+    return false;
+  }
+  return true;
+};
+
+const hasClient = async (client) => {
+  if (!client) {
+    client = await steamworks.init(2560850);
+    console.log('\n\n******\nSet app id\n******\n\n');
+    return false;
+  }
+  return true;
+};
+
+const handleSteamLogUser = async (event) => {
+  if (!isSteam(useSteam) && !hasClient(client)) {
+    return;
   }
 
-  if (!client) {
-    client = await steamworks.init(480);
-    console.log('\n\n******\nNow playing as the demo app Spacewar\n******\n\n');
-  }
   const result = await client.localplayer.getName();
+  return result;
+}
+
+const handleFetchSteamAchievements = async (event, achievementName) => {
+  if (!isSteam(useSteam) && !hasClient(client)) {
+    return;
+  }
+
+  const result = await client.achievement.isActivated(achievementName);
+  return result;
+}
+
+const handleSetSteamAchievements = async (event, achievementName) => {
+  if (!isSteam(useSteam) && !hasClient(client)) {
+    return;
+  }
+
+  const result = await client.achievement.activate(achievementName);
+  return result;
+}
+
+const handleClearSteamAchievements = async (event, achievementName) => {
+  if (!isSteam(useSteam) && !hasClient(client)) {
+    return;
+  }
+
+  const result = await client.achievement.clear(achievementName);
   return result;
 }
 // end steam code
@@ -49,11 +90,15 @@ const createMainWindow = () => {
   ipcMain.on('close-app', handleCloseApp);
   // add listener for the steam user
   ipcMain.handle('steam-log-user', handleSteamLogUser);
+  ipcMain.handle('steam-fetch-steam-achievements', handleFetchSteamAchievements);
+  ipcMain.handle('steam-set-steam-achievements', handleSetSteamAchievements);
+  ipcMain.handle('steam-clear-steam-achievements', handleClearSteamAchievements);
   // ipcMain.on('steam-activate-overlay', (event) => {
   //   console.log('\n****\nsteam-activate-overlay\n');
   //   console.log({overlay: client.overlay});
   //   client.overlay.activateDialog(6);
   // });
+
   ipcMain.on('window-app', handleWindowApp);
   ipcMain.on('fullscreen-app', handleFullscreenApp);
 
@@ -61,6 +106,7 @@ const createMainWindow = () => {
   const mainWindow = new BrowserWindow({
     autoHideMenuBar: true,
     titleBarStyle: 'hidden',
+    titleBarOverlay: true,
     fullscreen: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -83,6 +129,8 @@ const createMainWindow = () => {
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
+
+  return mainWindow;
 };
 
 const handleCloseApp = (isClosed) => {
@@ -92,13 +140,25 @@ const handleCloseApp = (isClosed) => {
 };
 
 const handleWindowApp = (isWindowed) => {
-  if (isWindowed) {
+  if (isWindowed && mainWindow) {
+    mainWindow.setFullScreen(false);
+    // win.setSize(width, height)
+    // mainWindow.setSize(800, 600);
+    mainWindow.setBounds({width: 800, height: 600 })
+    mainWindow.center();
+    mainWindow.setAutoHideMenuBar(false);
+    mainWindow.titleBarStyle = 'default';
+    mainWindow.titleBarOverlay = true;
     console.log('exit fullscreen, enter windowed view');
   }
 };
 
 const handleFullscreenApp = (isFullscreen) => {
-  if (isFullscreen) {
+  if (isFullscreen && mainWindow) {
+    mainWindow.setFullScreen(true);
+    mainWindow.setAutoHideMenuBar(true);
+    mainWindow.titleBarStyle = 'hidden';
+    mainWindow.titleBarOverlay = true;
     console.log('exit windowed, enter fullscreen view');
   }
 };
@@ -107,7 +167,7 @@ const handleFullscreenApp = (isFullscreen) => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
-  createMainWindow();
+  mainWindow = createMainWindow();
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -123,7 +183,7 @@ app.on('activate', () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
-    createMainWindow();
+    mainWindow = createMainWindow();
   }
 });
 

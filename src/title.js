@@ -42,8 +42,12 @@ const quitGameButton = {
 const chooseFileButton = {
     label: 'Start',
     onClick(state) {
-        // window.steamAPI.steamLogUser();
+        window.steamAPI.steamLogUser();
         // window.steamAPI.activateOverlay();
+        // window.steamAPI.steamSetSteamAchievements('ACHIEVEMENT_COLLECT_500_CRYSTALS');
+        // setTimeout(() => {
+        //     window.steamAPI.steamFetchSteamAchievements('ACHIEVEMENT_COLLECT_500_CRYSTALS')
+        // }, 2000);
         playSound(state, 'select');
         return {...state, loadScreen: state.time};
     },
@@ -54,11 +58,8 @@ const chooseFileButton = {
         this.top = 5 * height / 6 - this.height / 2;
         this.left = (width - this.width) / 2;
         if (window.electronAPI) {
-            // shift start button up to make room for quit button
-            // this.top = this.top - this.height / 4;
             const padding = buttonHeight / 10;
             this.top = height - (2 * buttonHeight) - (2 * padding);
-            console.log('make room for quit button below start button');
         }
     },
 };

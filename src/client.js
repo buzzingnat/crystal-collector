@@ -137,6 +137,7 @@ const update = () => {
         state = getNewState();
         state.saved.muteMusic = savedState.muteMusic;
         state.saved.muteSounds = savedState.muteSounds;
+        state.saved.fullScreen = window.electronAPI ? true : false;
         state.saveSlots = savedState.saveSlots;
         state.lastResized = Date.now();
         state.context = context;
