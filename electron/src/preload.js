@@ -12,27 +12,21 @@ contextBridge.exposeInMainWorld('steamAPI', {
     ipcRenderer.invoke('steam-log-user')
       .then((response) => {
         return console.log('steam-log-user: ', response)
-      })
+      });
   },
   activateOverlay: () => {
-    ipcRenderer.send('steam-activate-overlay')
+    ipcRenderer.send('steam-activate-overlay');
   },
-  steamFetchSteamAchievements: (achievementName) => {
-    ipcRenderer.invoke('steam-fetch-steam-achievements', achievementName)
-      .then((response) => {
-        return console.log('steam-fetch-steam-achievements: ', achievementName, ', ', response)
-      })
+  steamFetchSteamAchievement: (achievementName) => {
+    return ipcRenderer.invoke('steam-fetch-steam-achievements', achievementName);
   },
-  steamSetSteamAchievements: (achievementName) => {
-    ipcRenderer.invoke('steam-set-steam-achievements', achievementName)
+  steamSetSteamAchievement: (achievementName) => {
+    return ipcRenderer.invoke('steam-set-steam-achievements', achievementName)
       .then((response) => {
-        return console.log('steam-set-steam-achievements: ', achievementName, ', ', response)
-      })
+        return response;
+      });
   },
-  steamClearSteamAchievements: (achievementName) => {
-    ipcRenderer.invoke('steam-clear-steam-achievements', achievementName)
-      .then((response) => {
-        return console.log('steam-clear-steam-achievements: ', achievementName, ', ', response)
-      })
+  steamClearSteamAchievement: (achievementName) => {
+    return ipcRenderer.invoke('steam-clear-steam-achievements', achievementName);
   },
 })

@@ -16,7 +16,7 @@ const { muteSounds, unmuteSounds, muteTrack, unmuteTrack } = require('sounds');
 const { commitSaveToLocalStorage } = require('client');
 
 const saveGame = (state) => {
-    if (!state.ship && !state.shop) {
+    if (!state.ship && !state.shop && !state.title) {
         state = updateSave(state, {suspendedState: createSuspendedState(state)});
         commitSaveToLocalStorage(state);
     }

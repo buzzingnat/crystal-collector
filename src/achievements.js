@@ -53,10 +53,27 @@ const { addSprite, deleteSprite, updateSprite } = require('sprites');
 const { warpDriveSlots, renderSpaceBackground } = require('ship');
 const ACHIEVEMENT_ICON_FRAMES = [bronzeMedalFrame, silverMedalFrame, goldMedalFrame, diamondMedalFrame];
 
+// steamKeysToGameKeys['ACHIEVEMENT_COLLECT_X_CRYSTALS'] is 'collectXCrystals'
+const steamKeysToGameKeys = {
+    ACHIEVEMENT_COLLECT_X_CRYSTALS,
+    ACHIEVEMENT_COLLECT_X_CRYSTALS_IN_ONE_DAY,
+    ACHIEVEMENT_GAIN_X_BONUS_FUEL_IN_ONE_DAY,
+    ACHIEVEMENT_DIFFUSE_X_BOMBS,
+    ACHIEVEMENT_DIFFUSE_X_BOMBS_IN_ONE_DAY,
+    ACHIEVEMENT_PREVENT_X_EXPLOSIONS,
+    ACHIEVEMENT_EXPLORE_DEPTH_X,
+    ACHIEVEMENT_REPAIR_SHIP_IN_X_DAYS,
+};
+// gameKeysToSteamKeys['collectXCrystals'] is 'ACHIEVEMENT_COLLECT_X_CRYSTALS'
+const gameKeysToSteamKeys = {};
+for (let key in steamKeysToGameKeys) {
+    gameKeysToSteamKeys[steamKeysToGameKeys[key]] = key;
+}
 
 const achievementsData = {
     [ACHIEVEMENT_COLLECT_X_CRYSTALS]: {
-        goals: [500, 20000, 100000, 10000000],
+        // goals: [500, 20000, 100000, 10000000],
+        goals: [5, 20, 100, 10000000],
         bonusValues: [25, 50, 75, 100],
         getAchievementLabel: goal => `Collect ${goal} crystals`,
         getBonusLabel: bonusValue => `Gain ${bonusValue}% more crystals`,
@@ -161,11 +178,51 @@ function getAchievementBonus(state, key) {
     return bonusValue >= 0 && achievementsData[key].bonusValues[bonusValue];
 }
 
-function getAchievementStatSteam(state, key) {
-    window.steamAPI.steamFetchSteamAchievements(key);
-    // const achievementStats = state.saved.achievementStats || {};
-    // return achievementStats[key] || false;
+// Sets state.steamAchievements
+// eslint-disable-next-line no-unused-vars
+function initializeAchievementsSteam(state) {
+    state = {...state, steamAchievements: {}};
+    for (let key in achievementsData) {
+        for (let i = 0; i < achievementsData[key].goals.length; i++) {
+            const bonusLevel = i+1;
+            const tempKey = 'ACHIEVEMENT_' + key.split(/(?=[A-Z])/).join('_').toUpperCase() + '_' + bonusLevel;
+            window.steamAPI.steamFetchSteamAchievement(tempKey)
+                .then((isAchieved)=> state.steamAchievements[tempKey] = isAchieved);
+        }
+    }
+    return state;
 }
+// for development and testing
+// window.callInitializeAchievementsSteam = (state) => initializeAchievementsSteam(state)
+
+// eslint-disable-next-line no-unused-vars
+function fetchAchievementSteam (key, bonusLevel) {
+    const steamKeyType = gameKeysToSteamKeys[key];
+    const steamKey = steamKeyType + '_' + bonusLevel;
+    const isAchieved = window.steamAPI.steamFetchSteamAchievement(steamKey);
+    return isAchieved;
+}
+// for development and testing
+// window.callFetchAchievementSteam = (key, bonusLevel) => fetchAchievementSteam(key, bonusLevel)
+
+// eslint-disable-next-line no-unused-vars
+function clearAllAchievementsSteam(state) {
+    state = {...state};
+    for (let key in achievementsData) {
+        for (let i = 0; i < achievementsData[key].goals.length; i++) {
+            const bonusLevel = i+1;
+            const steamKeyType = gameKeysToSteamKeys[key];
+            const steamKey = steamKeyType + '_' + bonusLevel;
+            window.steamAPI.steamClearSteamAchievement(steamKey)
+                .then((isCleared)=> {
+                    if (isCleared) state.steamAchievements[steamKey] = false;
+                });
+        }
+    }
+    return state;
+}
+// for development and testing
+// window.callClearAllAchievementsSteam = (state) => clearAllAchievementsSteam(state)
 
 // Sets state.achievements and state.saved.achievementStats if necessary.
 function initializeAchievements(state) {
@@ -185,6 +242,7 @@ function getAchievementPercent(state, saveData) {
 
 function advanceAchievements(state) {
     if (!state.achievements) return initializeAchievements(state);
+    if (window.steamAPI && !state.steamAchievements) return initializeAchievementsSteam(state);
     for (let key in achievementsData) {
         const data = achievementsData[key];
         let bonusLevel = state.achievements[key];
@@ -207,7 +265,28 @@ function advanceAchievements(state) {
             // This is a null op if lastAchievement is not set or is no longer present.
             state = updateSprite(state, {id: state.lastAchievementId}, {nextAchievementId: achievement.id});
             state = {...state, lastAchievementId: achievement.id, lastAchievementTime: state.time};
+
+            if (window.steamAPI) {
+                // bonusLevel goes from -1 (no achievement) to 0 (first achievement) and up
+                for (let steamKeyLevel = 1; steamKeyLevel <= bonusLevel+1; steamKeyLevel++) {
+                    const steamKeyType = gameKeysToSteamKeys[key];
+                    const steamKey = steamKeyType + '_' + steamKeyLevel;
+                    const hasAchievedSteamLevel = state.steamAchievements[steamKey];
+                    if (hasAchievedSteamLevel) {
+                        continue;
+                    }
+                    window.steamAPI.steamFetchSteamAchievement(steamKey)
+                    .then((response) => {
+                        if (response) {
+                            initializeAchievementsSteam(state);
+                            return;
+                        }
+                        window.steamAPI.steamSetSteamAchievement(steamKey);
+                    });
+                }
+            }
         }
+
     }
     return state;
 }
@@ -227,7 +306,6 @@ const achievementSprite = {
         let {frame = 0, x = canvas.width - sprite.width - 10, y = canvas.height + 10, nextAchievementId} = sprite;
         if (frame > 150) return deleteSprite(state, sprite);
         const nextAchievement = state.spriteMap[nextAchievementId];
-        //console.log({nextAchievementId, nextAchievement});
         if (nextAchievement) {
             // If the next achievement is coming up move this achievement up out of the way.
             y = Math.min(y, nextAchievement.y - 15 - sprite.height);
