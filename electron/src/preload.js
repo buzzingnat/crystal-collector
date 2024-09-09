@@ -11,7 +11,7 @@ contextBridge.exposeInMainWorld('steamAPI', {
   steamLogUser: () => {
     ipcRenderer.invoke('steam-log-user')
       .then((response) => {
-        return console.log('steam-log-user: ', response)
+        return response;
       });
   },
   activateOverlay: () => {

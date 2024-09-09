@@ -3516,8 +3516,7 @@ for (var key in steamKeysToGameKeys) {
 }
 
 var achievementsData = (_achievementsData = {}, _defineProperty(_achievementsData, ACHIEVEMENT_COLLECT_X_CRYSTALS, {
-    // goals: [500, 20000, 100000, 10000000],
-    goals: [5, 20, 100, 10000000],
+    goals: [500, 20000, 100000, 10000000],
     bonusValues: [25, 50, 75, 100],
     getAchievementLabel: function getAchievementLabel(goal) {
         return 'Collect ' + goal + ' crystals';
@@ -10290,12 +10289,6 @@ var quitGameButton = {
 var chooseFileButton = {
     label: 'Start',
     onClick: function onClick(state) {
-        window.steamAPI.steamLogUser();
-        // window.steamAPI.activateOverlay();
-        // window.steamAPI.steamSetSteamAchievements('ACHIEVEMENT_COLLECT_500_CRYSTALS');
-        // setTimeout(() => {
-        //     window.steamAPI.steamFetchSteamAchievements('ACHIEVEMENT_COLLECT_500_CRYSTALS')
-        // }, 2000);
         playSound(state, 'select');
         return _extends({}, state, { loadScreen: state.time });
     },

@@ -72,8 +72,7 @@ for (let key in steamKeysToGameKeys) {
 
 const achievementsData = {
     [ACHIEVEMENT_COLLECT_X_CRYSTALS]: {
-        // goals: [500, 20000, 100000, 10000000],
-        goals: [5, 20, 100, 10000000],
+        goals: [500, 20000, 100000, 10000000],
         bonusValues: [25, 50, 75, 100],
         getAchievementLabel: goal => `Collect ${goal} crystals`,
         getBonusLabel: bonusValue => `Gain ${bonusValue}% more crystals`,

@@ -1,5 +1,5 @@
 const { app, BrowserWindow, ipcMain, session } = require('electron');
-const { argv, platform } = require('node:process');
+const process = require('node:process');
 const path = require('path');
 require('@dotenvx/dotenvx').config();
 // Set this to true if building for steam
@@ -10,7 +10,7 @@ let mainWindow;
 if (typeof __dirname === 'undefined') {
     // eslint-disable-next-line no-unused-vars
     let __dirname;
-    __dirname = path.dirname(argv[1]);
+    __dirname = path.dirname(process.argv[1]);
 }
 
 if (process.env.IS_STEAM === 'true') {
@@ -123,7 +123,7 @@ const createMainWindow = () => {
     webPreferences: {
       // eslint-disable-next-line no-undef
       preload: path.join(__dirname, 'preload.js'),
-      // TODO: currently always true while setting up environment variables
+      // set this to false to prevent players from using dev tools
       devTools: process.env.APP_ENV === 'test' || process.env.APP_ENV === 'dev' ? true : true,
     },
     icon: '/app-icons/icon.png',
@@ -134,7 +134,6 @@ const createMainWindow = () => {
 
   // eslint-disable-next-line no-undef
   creatingMainWindow.loadFile(path.join(__dirname, '../out-resources/index.html'));
-  console.log({env: process.env, appEnv: process.env.APP_ENV});
   if (process.env.APP_ENV === 'dev') {
     // Open the DevTools.
     creatingMainWindow.webContents.openDevTools();
@@ -194,7 +193,7 @@ app.on('ready', () => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  if (platform !== 'darwin') {
+  if (process.platform !== 'darwin') {
     app.quit();
   }
 });
