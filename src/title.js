@@ -272,10 +272,11 @@ const cancelDeleteButton = {
 
 function getTitleHUDButtons(state) {
     if (window.electronAPI && !state.loadScreen) {
-        const tempOptionsButton = getOptionsButton();
-        return [chooseFileButton, quitGameButton, tempOptionsButton];
+        const optionsButton = getOptionsButton();
+        return [chooseFileButton, quitGameButton, optionsButton];
     }
-    if (!state.loadScreen) return [chooseFileButton];
+    const optionsButton = getOptionsButton();
+    if (!state.loadScreen) return [chooseFileButton, optionsButton];
     if (state.deleteSlot !== false) return [confirmDeleteButton, cancelDeleteButton];
     return [...fileButtons, ...deleteFileButtons];
 }
