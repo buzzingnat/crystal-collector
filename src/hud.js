@@ -807,8 +807,12 @@ function getHUDButtons(state) {
     if (state.outroTime !== false) {
         return state.outroTime > endingSequenceDuration ? [continueButton] : [];
     }
-    if (state.showOptions) {
+    if (state.showOptions && !state.title) {
         return [...getOptionButtons(state), ...standardButtons];
+    }
+    // don't show help or achievements on the title screen
+    if (state.showOptions && state.title) {
+        return [...getOptionButtons(state), optionsButton];
     }
     if (state.title) {
         return getTitleHUDButtons(state);

@@ -66,7 +66,6 @@ function updateCanvasSize() {
     if (state) state.lastResized = Date.now();
     context.imageSmoothingEnabled = false;
 }
-// Disable resizing on Kongregate to see if it reduces flicker.
 updateCanvasSize();
 window.onresize = updateCanvasSize;
 
