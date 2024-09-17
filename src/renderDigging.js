@@ -259,8 +259,17 @@ function renderCellShading(context, state, row, column) {
     const columnz = z(column);
     const cell = state.rows[row] && state.rows[row][columnz];
     if (!cell || cell.destroyed) return;
-    // Indicator that the player can explore this cell:
     context.strokeStyle = '#FFF';
+    // Visual aide to count pips in background cell
+    if (cell.numbersRevealed && (cell.crystals || cell.traps || cell.treasures) && isCellRevealed(state, row, column)) {
+        drawCellPath(context, state, row, column, 5);
+        context.save();
+        context.globalAlpha = 0.2;
+        context.lineWidth = 4;
+        context.stroke();
+        context.restore();
+    }
+    // Indicator that the player can explore this cell:
     if (!isCellRevealed(state, row, column)) {
         const shipPartLocation = getShipPartLocation(state);
         const p1 = getCellCenter(state, shipPartLocation.row, shipPartLocation.column);

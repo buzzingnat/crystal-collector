@@ -14,6 +14,7 @@ module.exports = {
     getButtonColor,
     getSleepButton,
     getHelpButton,
+    getOptionsButton,
 };
 
 Number.prototype.abbreviate = function () {
@@ -192,6 +193,10 @@ const optionsButton = {
         this.left = width - padding - this.width;
     },
 };
+function getOptionsButton() {
+    return optionsButton;
+}
+
 const achievementButton = {
     render(context, state, button) {
         context.save();
@@ -802,14 +807,18 @@ function getHUDButtons(state) {
     if (state.outroTime !== false) {
         return state.outroTime > endingSequenceDuration ? [continueButton] : [];
     }
-    if (state.showAchievements) {
-        return [closeButton, ...standardButtons];
-    }
-    if (state.showOptions) {
+    if (state.showOptions && !state.title) {
         return [...getOptionButtons(state), ...standardButtons];
+    }
+    // don't show help or achievements on the title screen
+    if (state.showOptions && state.title) {
+        return [...getOptionButtons(state), optionsButton];
     }
     if (state.title) {
         return getTitleHUDButtons(state);
+    }
+    if (state.showAchievements) {
+        return [closeButton, ...standardButtons];
     }
     if (state.ship) {
         if (state.restart) {

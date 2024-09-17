@@ -16,7 +16,7 @@ const { muteSounds, unmuteSounds, muteTrack, unmuteTrack } = require('sounds');
 const { commitSaveToLocalStorage } = require('client');
 
 const saveGame = (state) => {
-    if (!state.ship && !state.shop) {
+    if (!state.ship && !state.shop && !state.title) {
         state = updateSave(state, {suspendedState: createSuspendedState(state)});
         commitSaveToLocalStorage(state);
     }
@@ -132,6 +132,22 @@ const skipAnimations = {
     ...optionToggleButton,
     optionIndex: optionIndex++,
 };
+const fullScreenButton = {
+    getLabel(state) {
+        if (state.saved.fullScreen) return 'Fullscreen Off';
+        return 'Fullscreen On';
+    },
+    render: renderBasicButton,
+    onClick(state) {
+        playSound(state, 'select');
+        if (state.saved.fullScreen) window.electronAPI.setWindowedButton(true);
+        else window.electronAPI.setFullscreenButton(true);
+        const fullScreen = !state.saved.fullScreen;
+        return updateSave(state, {fullScreen});
+    },
+    ...optionToggleButton,
+    optionIndex: optionIndex++,
+};
 const resumeButton = {
     label: 'Resume',
     render: renderBasicButton,
@@ -141,8 +157,9 @@ const resumeButton = {
     },
     resize({height, width, buttonWidth, buttonHeight}) {
         // This is duplicating the logic for the y position of the option buttons
-        // and assuming this should display as a fourth row.
-        const y = 3;
+        // and assuming this should display as a fourth row in browser
+        // and fifth row in electron.
+        const y = window.electronAPI ? 4 : 3;
         this.height = buttonHeight;
         this.width =  buttonWidth * 2;
         this.top = height / 2 - this.height * (3.5 - 1.2 * y);
@@ -188,7 +205,8 @@ function getOptionButtons(state) {
         muteSoundsButton, muteMusicButton,
         showHelpButton, autoscrollButton,
         skipAnimations, hideParticles,
+        ...((window.electronAPI) ? [fullScreenButton] : []),
                 resumeButton,
-        titleButton, ...((window.electronAPI && !state.loadScreen) ? [quitButton] : []),
+        ...(state.title ? [] : [titleButton]), ...((window.electronAPI && !state.loadScreen) ? [quitButton] : []),
     ];
 }

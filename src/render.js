@@ -154,15 +154,15 @@ function render(context, state) {
     }
     if (state.outroTime !== false) {
         renderOutro(context, state);
+    } else if (state.showOptions) {
+        renderSpaceBackground(context, state);
     } else if (state.title) {
         renderTitle(context, state);
     } else if (!state.saved.finishedIntro) {
         renderIntro(context, state);
     } else if (state.showAchievements) {
         renderAchievements(context, state);
-    } else if (state.showOptions) {
-        renderSpaceBackground(context, state);
-    } else if (state.ship) {
+    }else if (state.ship) {
         renderShipScene(context, state);
     } else if (state.shop) {
         renderShop(context, state);

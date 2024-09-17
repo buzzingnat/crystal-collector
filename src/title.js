@@ -12,6 +12,7 @@ const { renderShipBackground, renderShip, shipPartAnimations } = require('ship')
 const { getButtonColor, getLayoutProperties, renderButtonBackground, renderBasicButton } = require('hud');
 const { achievementAnimation, getAchievementPercent, initializeAchievements } = require('achievements');
 const { applySuspendedState } = require('suspendedState');
+const { getOptionsButton } = require('hud');
 const { IS_DEMO } = require('isDemo');
 
 const titleFrame = r(100, 126, {image: requireImage('gfx/logotall.png')});
@@ -51,11 +52,8 @@ const chooseFileButton = {
         this.top = 5 * height / 6 - this.height / 2;
         this.left = (width - this.width) / 2;
         if (window.electronAPI) {
-            // shift start button up to make room for quit button
-            // this.top = this.top - this.height / 4;
             const padding = buttonHeight / 10;
             this.top = height - (2 * buttonHeight) - (2 * padding);
-            console.log('make room for quit button below start button');
         }
     },
 };
@@ -273,18 +271,12 @@ const cancelDeleteButton = {
 };
 
 function getTitleHUDButtons(state) {
-//     {
-//     "chooseFileButton": {
-//         "label": "Start",
-//         "height": 91,
-//         "width": 228,
-//         "top": 854.5,
-//         "left": 568.5,
-//         "lastResized": 1720624857362
-//     }
-// }
-    if (window.electronAPI && !state.loadScreen) return [chooseFileButton, quitGameButton];
-    if (!state.loadScreen) return [chooseFileButton];
+    if (window.electronAPI && !state.loadScreen) {
+        const optionsButton = getOptionsButton();
+        return [chooseFileButton, quitGameButton, optionsButton];
+    }
+    const optionsButton = getOptionsButton();
+    if (!state.loadScreen) return [chooseFileButton, optionsButton];
     if (state.deleteSlot !== false) return [confirmDeleteButton, cancelDeleteButton];
     return [...fileButtons, ...deleteFileButtons];
 }
