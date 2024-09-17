@@ -4154,7 +4154,6 @@ function updateCanvasSize() {
     if (state) state.lastResized = Date.now();
     context.imageSmoothingEnabled = false;
 }
-// Disable resizing on Kongregate to see if it reduces flicker.
 updateCanvasSize();
 window.onresize = updateCanvasSize;
 
@@ -5560,7 +5559,7 @@ var _require4 = require('ship'),
 var _require5 = require('state'),
     updateSave = _require5.updateSave;
 
-var incomingAdvice = [{ label: 'You can keep digging for crystals until you run out of energy.' }, { label: 'Each blue diamond means crystals can be found in or next to that area.' }, { label: 'Better sensors let you dig further and reveal bonus information.' }, { label: 'Energy Extractors can convert dangerous debris into valuable energy.' }, { label: 'Explosion Protection can prevent some of the explosions from unstable debris.' }, { label: 'Digging deeper uses more energy, but you will also find more crystals.' }, { label: 'Crystals have absorbed energy from the fallen ship debris.' }, { label: 'When you find crystals you will gain energy instead of losing it.' }, { label: 'Exclamation points mark special cargo and ship parts that survived the impact.' }, { label: 'There is a way to tell when a stable ship part is nearby.' }];
+var incomingAdvice = [{ label: 'You can keep digging for crystals until you run out of energy.' }, { label: 'Each blue diamond means crystals can be found in or next to that area.' }, { label: 'Better sensors let you dig further and reveal bonus information.' }, { label: 'Energy Extractors can convert dangerous debris into valuable energy.' }, { label: 'Explosion Protection can prevent some of the explosions from unstable debris.' }, { label: 'Digging deeper uses more energy, but you will also find more crystals.' }, { label: 'Crystals have absorbed energy from the fallen ship debris.' }, { label: 'When you find crystals you will gain energy instead of losing it.' }, { label: 'Exclamation points mark special cargo and ship parts that survived the impact.' }, { label: 'There is a way to tell when a stable ship part is nearby.' }, { label: 'If a revealed tile is empty, there will never be anything in or next to it.' }];
 
 var leavingAdvice = [{ label: 'Spend crystals to upgrade Dig Bot when you return to the ship.' }, { label: 'Unstable ship debris marked by nearby red squares will explode.' }, { label: 'The range of your sensors decreases as you dig deeper.' }, { label: 'Energy Extractors will also convert crystals into energy.' }, { label: 'Unstable debris will cause even more explosions as you dig deeper.' }, { label: 'Most of the unstable ship debris is buried deep beneath the surface.' }, { label: 'Unlocking achievements will improve Dig Bot\'s capabilities.' }, { label: 'You will need to find five stable ship parts to repair your warp drive.' }, { label: 'If an obstacle blocks your way, try searching for crystals nearby.' }, { label: 'You can start over from day 1 with all of your achievements after repairing your ship.' }];
 
@@ -6601,8 +6600,12 @@ function getHUDButtons(state) {
     if (state.outroTime !== false) {
         return state.outroTime > endingSequenceDuration ? [continueButton] : [];
     }
-    if (state.showOptions) {
+    if (state.showOptions && !state.title) {
         return [].concat(_toConsumableArray(getOptionButtons(state)), standardButtons);
+    }
+    // don't show help or achievements on the title screen
+    if (state.showOptions && state.title) {
+        return [].concat(_toConsumableArray(getOptionButtons(state)), [optionsButton]);
     }
     if (state.title) {
         return getTitleHUDButtons(state);
@@ -6802,23 +6805,25 @@ var _KEY_MAPPINGS, _GAME_PAD_MAPPINGS;
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /* global navigator */
-var KEY_LEFT = exports.KEY_LEFT = 37;
-var KEY_RIGHT = exports.KEY_RIGHT = 39;
-var KEY_UP = exports.KEY_UP = 38;
-var KEY_DOWN = exports.KEY_DOWN = 40;
-var KEY_SPACE = exports.KEY_SPACE = 32;
-var KEY_SHIFT = exports.KEY_SHIFT = 16;
-var KEY_ENTER = exports.KEY_ENTER = 13;
-var KEY_BACK_SPACE = exports.KEY_BACK_SPACE = 8;
-var KEY_E = exports.KEY_E = 'E'.charCodeAt(0);
-var KEY_G = exports.KEY_G = 'G'.charCodeAt(0);
-var KEY_R = exports.KEY_R = 'R'.charCodeAt(0);
-var KEY_X = exports.KEY_X = 'X'.charCodeAt(0);
-var KEY_C = exports.KEY_C = 'C'.charCodeAt(0);
-var KEY_V = exports.KEY_V = 'V'.charCodeAt(0);
-var KEY_T = exports.KEY_T = 'T'.charCodeAt(0);
+// convert to using event.key output instead of deprecated event.which
+var KEY_LEFT = exports.KEY_LEFT = 'ArrowLeft';
+var KEY_RIGHT = exports.KEY_RIGHT = 'ArrowRight';
+var KEY_UP = exports.KEY_UP = 'ArrowUp';
+var KEY_DOWN = exports.KEY_DOWN = 'ArrowDown';
+var KEY_SPACE = exports.KEY_SPACE = ' ';
+var KEY_SHIFT = exports.KEY_SHIFT = 'Shift';
+var KEY_ENTER = exports.KEY_ENTER = 'Enter';
+var KEY_BACK_SPACE = exports.KEY_BACK_SPACE = 'Backspace';
+var KEY_ESCAPE = exports.KEY_ESCAPE = 'Escape';
+var KEY_E = exports.KEY_E = 'e';
+var KEY_G = exports.KEY_G = 'g';
+var KEY_R = exports.KEY_R = 'r';
+var KEY_X = exports.KEY_X = 'x';
+var KEY_C = exports.KEY_C = 'c';
+var KEY_V = exports.KEY_V = 'v';
+var KEY_T = exports.KEY_T = 't';
 
-var KEY_MAPPINGS = (_KEY_MAPPINGS = {}, _defineProperty(_KEY_MAPPINGS, 'A'.charCodeAt(0), KEY_LEFT), _defineProperty(_KEY_MAPPINGS, 'D'.charCodeAt(0), KEY_RIGHT), _defineProperty(_KEY_MAPPINGS, 'W'.charCodeAt(0), KEY_UP), _defineProperty(_KEY_MAPPINGS, 'S'.charCodeAt(0), KEY_DOWN), _KEY_MAPPINGS);
+var KEY_MAPPINGS = (_KEY_MAPPINGS = {}, _defineProperty(_KEY_MAPPINGS, 'a', KEY_LEFT), _defineProperty(_KEY_MAPPINGS, 'd', KEY_RIGHT), _defineProperty(_KEY_MAPPINGS, 'w', KEY_UP), _defineProperty(_KEY_MAPPINGS, 's', KEY_DOWN), _KEY_MAPPINGS);
 
 // This mapping assumes a canonical gamepad setup as seen in:
 // https://w3c.github.io/gamepad/#remapping
@@ -6838,18 +6843,18 @@ function buttonIsPressed(button) {
 }
 
 window.document.onkeydown = function (event) {
-    //console.log(event);
+    // console.log(event.key);
     // Don't process this if the key is already down.
-    if (physicalKeysDown[event.which]) return;
-    physicalKeysDown[event.which] = true;
-    var mappedKeyCode = KEY_MAPPINGS[event.which] || event.which;
+    if (physicalKeysDown[event.key]) return;
+    physicalKeysDown[event.key] = true;
+    var mappedKeyCode = KEY_MAPPINGS[event.key] || event.key;
     keysDown[mappedKeyCode] = (keysDown[mappedKeyCode] || 0) + 1;
     //console.log(keysDown[mappedKeyCode]);
 };
 
 window.document.onkeyup = function (event) {
-    physicalKeysDown[event.which] = false;
-    var mappedKeyCode = KEY_MAPPINGS[event.which] || event.which;
+    physicalKeysDown[event.key] = false;
+    var mappedKeyCode = KEY_MAPPINGS[event.key] || event.key;
     keysDown[mappedKeyCode] = Math.max(0, (keysDown[mappedKeyCode] || 0) - 1);
     //console.log(keysDown[mappedKeyCode]);
 };
@@ -7745,8 +7750,17 @@ function renderCellShading(context, state, row, column) {
     var columnz = z(column);
     var cell = state.rows[row] && state.rows[row][columnz];
     if (!cell || cell.destroyed) return;
-    // Indicator that the player can explore this cell:
     context.strokeStyle = '#FFF';
+    // Visual aide to count pips in background cell
+    if (cell.numbersRevealed && (cell.crystals || cell.traps || cell.treasures) && isCellRevealed(state, row, column)) {
+        drawCellPath(context, state, row, column, 5);
+        context.save();
+        context.globalAlpha = 0.2;
+        context.lineWidth = 4;
+        context.stroke();
+        context.restore();
+    }
+    // Indicator that the player can explore this cell:
     if (!isCellRevealed(state, row, column)) {
         var shipPartLocation = getShipPartLocation(state);
         var p1 = getCellCenter(state, shipPartLocation.row, shipPartLocation.column);
@@ -8397,7 +8411,7 @@ var endingSequence = [
         if (animationTime < 5500) {
             renderCreditsCard(context, state, 'Additional Programming', ['Haydn Neese'], getCardAlpha(animationTime, 5000));
         } else if (animationTime >= 6500) {
-            renderCreditsCard(context, state, 'Testing', ['Chris Evans', 'Leon Garcia', 'Hillary Spratt', 'And Many Others'], getCardAlpha(animationTime - 5500, 5000));
+            renderCreditsCard(context, state, 'Testing', ['Chris Evans', 'Leon Garcia', 'Blaise Spratt', 'Hillary Spratt', 'And Many Others'], getCardAlpha(animationTime - 5500, 5000));
         }
     }
 },
@@ -9671,9 +9685,13 @@ var _require = require('gameConstants'),
     canvas = _require.canvas,
     EDGE_LENGTH = _require.EDGE_LENGTH;
 
-var _require2 = require('sounds'),
-    playSound = _require2.playSound,
-    playTrack = _require2.playTrack;
+var _require2 = require('keyboard'),
+    isKeyDown = _require2.isKeyDown,
+    KEY_ESCAPE = _require2.KEY_ESCAPE;
+
+var _require3 = require('sounds'),
+    playSound = _require3.playSound,
+    playTrack = _require3.playTrack;
 
 module.exports = {
     getNewState: getNewState,
@@ -9688,8 +9706,8 @@ module.exports = {
     updateSave: updateSave
 };
 
-var _require3 = require('scenes'),
-    introSequenceDuration = _require3.introSequenceDuration;
+var _require4 = require('scenes'),
+    introSequenceDuration = _require4.introSequenceDuration;
 
 function playSoundWithState(state, sound) {
     playSound(sound, state.saved.muteSounds);
@@ -9698,28 +9716,28 @@ function playTrackWithState(state, bgm, bgmTime) {
     playTrack(bgm, bgmTime, state.saved.muteMusic);
 }
 
-var _require4 = require('animations'),
-    areImagesLoaded = _require4.areImagesLoaded;
+var _require5 = require('animations'),
+    areImagesLoaded = _require5.areImagesLoaded;
 
-var _require5 = require('hud'),
-    getHUDButtons = _require5.getHUDButtons;
+var _require6 = require('hud'),
+    getHUDButtons = _require6.getHUDButtons;
 
-var _require6 = require('help'),
-    shouldShowHelp = _require6.shouldShowHelp,
-    showIncomingHint = _require6.showIncomingHint;
+var _require7 = require('help'),
+    shouldShowHelp = _require7.shouldShowHelp,
+    showIncomingHint = _require7.showIncomingHint;
 
-var _require7 = require('digging'),
-    advanceDigging = _require7.advanceDigging,
-    getOverCell = _require7.getOverCell,
-    getTopTarget = _require7.getTopTarget;
+var _require8 = require('digging'),
+    advanceDigging = _require8.advanceDigging,
+    getOverCell = _require8.getOverCell,
+    getTopTarget = _require8.getTopTarget;
 
-var _require8 = require('ship'),
-    arriveAnimation = _require8.arriveAnimation;
+var _require9 = require('ship'),
+    arriveAnimation = _require9.arriveAnimation;
 
-var _require9 = require('achievements'),
-    advanceAchievements = _require9.advanceAchievements,
-    getAchievementBonus = _require9.getAchievementBonus,
-    ACHIEVEMENT_DIFFUSE_X_BOMBS_IN_ONE_DAY = _require9.ACHIEVEMENT_DIFFUSE_X_BOMBS_IN_ONE_DAY;
+var _require10 = require('achievements'),
+    advanceAchievements = _require10.advanceAchievements,
+    getAchievementBonus = _require10.getAchievementBonus,
+    ACHIEVEMENT_DIFFUSE_X_BOMBS_IN_ONE_DAY = _require10.ACHIEVEMENT_DIFFUSE_X_BOMBS_IN_ONE_DAY;
 
 var INITIAL_LAVA_DEPTH = 100;
 
@@ -10000,12 +10018,13 @@ function advanceState(state) {
         });
         delete state.hintButton;
     }
+    var isIntroPlaying = state.outroTime === false && state.saveSlot !== false && !state.saved.finishedIntro;
     if (state.outroTime !== false) {
         if (state.outroTime === 6300) playSoundWithState(state, 'shipWarp');
         state = _extends({}, state, {
             outroTime: state.outroTime + FRAME_LENGTH
         });
-    } else if (state.saveSlot !== false && !state.saved.finishedIntro) {
+    } else if (isIntroPlaying) {
         state = _extends({}, state, {
             introTime: (state.introTime || 0) + FRAME_LENGTH
         });
@@ -10018,6 +10037,19 @@ function advanceState(state) {
     for (var spriteId in state.spriteMap) {
         state = state.spriteMap[spriteId].advance(state, state.spriteMap[spriteId]);
     }
+    var canShowOptions = state.outroTime === false && !isIntroPlaying && !state.incoming && !state.leaving;
+    var isEscapeKeyDown = isKeyDown(KEY_ESCAPE);
+    if (canShowOptions) {
+        var wasEscapedKeyPressedThisFrame = !state.wasEscapeKeyDown && isEscapeKeyDown;
+        if (wasEscapedKeyPressedThisFrame) {
+            state = _extends({}, state, {
+                showOptions: state.showOptions ? false : state.time
+            });
+        }
+    }
+    state = _extends({}, state, {
+        wasEscapeKeyDown: isEscapeKeyDown
+    });
     return _extends({}, state, { clicked: false, rightClicked: false });
 }
 
@@ -10031,7 +10063,7 @@ function applyActions(state, actions) {
     return state;
 }
 
-},{"Rectangle":2,"achievements":3,"animations":4,"digging":6,"gameConstants":8,"help":9,"hud":10,"random":14,"scenes":18,"ship":19,"sounds":21}],24:[function(require,module,exports){
+},{"Rectangle":2,"achievements":3,"animations":4,"digging":6,"gameConstants":8,"help":9,"hud":10,"keyboard":12,"random":14,"scenes":18,"ship":19,"sounds":21}],24:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -10530,10 +10562,11 @@ var cancelDeleteButton = {
 
 function getTitleHUDButtons(state) {
     if (window.electronAPI && !state.loadScreen) {
-        var tempOptionsButton = getOptionsButton();
-        return [chooseFileButton, quitGameButton, tempOptionsButton];
+        var _optionsButton = getOptionsButton();
+        return [chooseFileButton, quitGameButton, _optionsButton];
     }
-    if (!state.loadScreen) return [chooseFileButton];
+    var optionsButton = getOptionsButton();
+    if (!state.loadScreen) return [chooseFileButton, optionsButton];
     if (state.deleteSlot !== false) return [confirmDeleteButton, cancelDeleteButton];
     return [].concat(_toConsumableArray(fileButtons), _toConsumableArray(deleteFileButtons));
 }
