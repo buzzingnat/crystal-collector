@@ -1,19 +1,13 @@
 const { app, BrowserWindow, ipcMain, session } = require('electron');
 const process = require('node:process');
 const path = require('path');
-require('@dotenvx/dotenvx').config();
+const appConfig = require('../config');
 // Set this to true if building for steam
 let steamworks;
 let client;
 let mainWindow;
 
-if (typeof __dirname === 'undefined') {
-    // eslint-disable-next-line no-unused-vars
-    let __dirname;
-    __dirname = path.dirname(process.argv[1]);
-}
-
-if (process.env.IS_STEAM === 'true') {
+if (appConfig.config.isSteam) {
   steamworks = require('steamworks.js');
 
   try {
@@ -28,7 +22,7 @@ if (process.env.IS_STEAM === 'true') {
 }
 
 const isSteam = () => {
-  if (process.env.IS_STEAM !== 'true') {
+  if (!appConfig.config.isSteam) {
     console.log('STEAM IS NOT ENABLED');
     return false;
   }
@@ -98,13 +92,13 @@ const createMainWindow = () => {
   ipcMain.handle('steam-fetch-steam-achievements', async (event, message) => {
     return await handleFetchSteamAchievement(event, message)
       .then((data) => data)
-      .catch((error) => 'Error Loading Steam Achievements');
+      .catch((error) => 'Error Loading Steam Achievements ' + error);
   });
   ipcMain.handle('steam-set-steam-achievements', handleSetSteamAchievement);
   ipcMain.handle('steam-clear-steam-achievements', async (event, message) => {
     return await handleClearSteamAchievement(event, message)
       .then((data) => data)
-      .catch((error) => 'Error Clearing Steam Achievements');
+      .catch((error) => 'Error Clearing Steam Achievements ' + error);
   });
   // ipcMain.on('steam-activate-overlay', (event) => {
   //   console.log({overlay: client.overlay});
@@ -124,7 +118,7 @@ const createMainWindow = () => {
       // eslint-disable-next-line no-undef
       preload: path.join(__dirname, 'preload.js'),
       // set this to false to prevent players from using dev tools
-      devTools: process.env.APP_ENV === 'test' || process.env.APP_ENV === 'dev' ? true : true,
+      devTools: (appConfig.config.appEnv === 'test' || appConfig.config.appEnv === 'dev' ) ? true : false,
     },
     icon: '/app-icons/icon.png',
   });
@@ -134,7 +128,7 @@ const createMainWindow = () => {
 
   // eslint-disable-next-line no-undef
   creatingMainWindow.loadFile(path.join(__dirname, '../out-resources/index.html'));
-  if (process.env.APP_ENV === 'dev') {
+  if (appConfig.config.appEnv === 'test' || appConfig.config.appEnv === 'dev') {
     // Open the DevTools.
     creatingMainWindow.webContents.openDevTools();
   }
