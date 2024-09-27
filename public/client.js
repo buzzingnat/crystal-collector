@@ -3801,6 +3801,21 @@ function advanceAchievements(state) {
             }
         }
     }
+    // Check to update steam only achievements.
+    if (window.steamAPI) {
+        var isShipRepaired = state.saved.shipPart >= warpDriveSlots.length;
+        var didPlayerHitAnyBombs = state.saved.bombsHitThisRun > 0;
+        var _steamKey = 'ACHIEVEMENT_REPAIR_SHIP_NO_EXPLOSIONS';
+        if (isShipRepaired && !didPlayerHitAnyBombs && !state.steamAchievements[_steamKey]) {
+            window.steamAPI.steamFetchSteamAchievement(_steamKey).then(function (response) {
+                if (response) {
+                    initializeAchievementsSteam(state);
+                    return;
+                }
+                window.steamAPI.steamSetSteamAchievement(_steamKey);
+            });
+        }
+    }
     return state;
 }
 
@@ -4792,6 +4807,9 @@ function detonateDebris(state, row, column) {
     var cellsInRange = getCellsInRange(state, row, column, explosionRange).sort(function (A, B) {
         return A.distance - B.distance;
     });
+    // Increment number of bombs the player has hit over the course of this run.
+    state = updateSave(state, { bombsHitThisRun: state.saved.bombsHitThisRun + 1 });
+    console.log(state.saved.bombsHitThisRun);
     var firstCell = true;
     var _iteratorNormalCompletion5 = true;
     var _didIteratorError5 = false;
@@ -9765,6 +9783,7 @@ function getNewSaveSlot() {
         bombsDiffusedToday: 0,
         bonusFuelToday: 0,
         crystalsCollectedToday: 0,
+        bombsHitThisRun: 0,
         explosionProtection: 0.2,
         range: 1.2,
         maxFuel: 100,
@@ -9865,6 +9884,7 @@ function restart(state) {
         saved: _extends({}, state.saved, {
             score: 0,
             day: 0,
+            bombsHitThisRun: 0,
             maxBombDiffusers: 3,
             bombDiffusers: 3,
             explosionProtection: 0.2,
@@ -10409,7 +10429,7 @@ var fileButton = {
         if (this.p < 1) return state;
         var saveData = this.getSaveData(state);
         state.saveSlot = this.index;
-        state.saved = _extends({}, state.saved, saveData, {
+        state.saved = _extends({}, getNewSaveSlot(), state.saved, saveData, {
             // These fields get stored on the individual save slots,
             // but don't want to override the global setting on load.
             muteMusic: state.saved.muteMusic,

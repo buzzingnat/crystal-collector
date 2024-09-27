@@ -287,6 +287,22 @@ function advanceAchievements(state) {
         }
 
     }
+    // Check to update steam only achievements.
+    if (window.steamAPI) {
+        const isShipRepaired = state.saved.shipPart >= warpDriveSlots.length;
+        const didPlayerHitAnyBombs = state.saved.bombsHitThisRun > 0;
+        const steamKey = 'ACHIEVEMENT_REPAIR_SHIP_NO_EXPLOSIONS';
+        if (isShipRepaired && !didPlayerHitAnyBombs && !state.steamAchievements[steamKey]) {
+            window.steamAPI.steamFetchSteamAchievement(steamKey)
+            .then((response) => {
+                if (response) {
+                    initializeAchievementsSteam(state);
+                    return;
+                }
+                window.steamAPI.steamSetSteamAchievement(steamKey);
+            });
+        }
+    }
     return state;
 }
 

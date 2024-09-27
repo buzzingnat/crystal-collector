@@ -343,6 +343,9 @@ function detonateDebris(state, row, column) {
     const cellsInRange = getCellsInRange(state, row, column, explosionRange).sort(
         (A, B) => A.distance - B.distance
     );
+    // Increment number of bombs the player has hit over the course of this run.
+    state = updateSave(state, {bombsHitThisRun: state.saved.bombsHitThisRun + 1});
+    console.log(state.saved.bombsHitThisRun);
     let firstCell = true;
     for (const cellCoords of cellsInRange) {
         const depth = getDepth(state, cellCoords.row, cellCoords.column);

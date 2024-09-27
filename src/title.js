@@ -138,11 +138,14 @@ const fileButton = {
         if (this.p < 1) return state;
         const saveData = this.getSaveData(state);
         state.saveSlot = this.index;
-        state.saved = {...state.saved, ...saveData,
+        state.saved = {
+            ...getNewSaveSlot(),
+            ...state.saved,
+            ...saveData,
             // These fields get stored on the individual save slots,
             // but don't want to override the global setting on load.
             muteMusic: state.saved.muteMusic,
-            muteSounds: state.saved.muteSounds
+            muteSounds: state.saved.muteSounds,
         };
         state = initializeAchievements(state);
         state.loadScreen = false;
