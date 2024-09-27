@@ -214,8 +214,8 @@ const achievementButton = {
     resize(layoutProperties) {
         const {buttonHeight, padding} = layoutProperties;
         helpButton.resize(layoutProperties);
-        this.height = achievementAnimation.frames[0].height;
-        this.width = achievementAnimation.frames[0].width;
+        this.height = helpButtonAnimation.frames[0].height;
+        this.width = helpButtonAnimation.frames[0].width;
         this.scale = Math.round(buttonHeight / this.width);
         this.height *= this.scale;
         this.width *= this.scale;
