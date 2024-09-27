@@ -18,9 +18,30 @@ const context = canvas.getContext('2d');
 context.imageSmoothingEnabled = false;
 document.body.appendChild(canvas);
 
+let menuBar;
+if (window.electronAPI) {
+    menuBar = document.createElement('div');
+    menuBar.style.width = window.outerWidth;
+    menuBar.style.height = 30;
+    menuBar.style.position = 'fixed';
+    menuBar.style.zIndex = 1000;
+    menuBar.style.top = 0;
+    menuBar.style.left = 0;
+    menuBar.style.background = '#888';
+    menuBar.style.borderBottom = '1px #333 solid';
+    menuBar.style.boxSizing = 'border-box';
+    // turn on dragging for menuBar element
+    menuBar.style['-webkit-app-region'] = 'drag';
+    document.body.insertBefore(menuBar, document.body.children[0]);
+
+    // turn off dragging for canvas element if inside of the electron app
+    canvas.style['-webkit-app-region'] = 'no-drag';
+}
+
 module.exports = {
     canvas,
     context,
+    menuBar,
     FRAME_LENGTH: 20,
     EDGE_LENGTH,
     COLUMN_WIDTH,

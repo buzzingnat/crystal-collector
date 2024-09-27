@@ -1,5 +1,5 @@
 const {
-    canvas, context, FRAME_LENGTH,
+    canvas, context, menuBar, FRAME_LENGTH,
 } = require('gameConstants');
 
 const { preloadSounds } = require('sounds');
@@ -58,6 +58,10 @@ function updateCanvasSize() {
     }
     scale = Math.max(1, Math.floor(scale));
     canvas.height = Math.max(300, Math.ceil(window.innerHeight / scale));
+    if (window.electronAPI) {
+        canvas.height -= 15;
+        canvas.style.top = 30;
+    }
     canvas.width = Math.ceil(window.innerWidth / scale);
     canvas.style.transformOrigin = '0 0'; //scale from top left
     canvas.style.transform = 'scale(' + scale + ')';
@@ -67,7 +71,24 @@ function updateCanvasSize() {
     context.imageSmoothingEnabled = false;
 }
 updateCanvasSize();
-window.onresize = updateCanvasSize;
+// window.onresize = updateCanvasSize;
+
+function updateMenuSize() {
+    menuBar.style.width = window.innerWidth;
+    menuBar.style.height = 30;
+    if (state && state.saved && state.saved.fullScreen === false) {
+        menuBar.style.display = 'block';
+        menuBar.style.height = '30';
+    } else {
+        menuBar.style.display = 'none';
+        menuBar.style.height = '0';
+    }
+}
+updateMenuSize();
+window.onresize = () => {
+    updateMenuSize();
+    updateCanvasSize();
+}
 
 function getEventCoords(event) {
     let x = 0, y = 0;
@@ -161,6 +182,8 @@ const update = () => {
         preloadSounds();
         preloadedSounds = true;
     }
+
+    // insert
 
     //if (stateQueue.length && isKeyDown(KEY_R)) {
     //    state = stateQueue.shift();
