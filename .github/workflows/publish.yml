@@ -16,11 +16,12 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v1
 
-      # Try using newer github actions, DOES NOT WORK
+      # Try using newer github actions, NEED TO TEST
+      # https://stackoverflow.com/a/60679655
       # - name: Read .nvmrc
-      #   run: |
-      #     node_version={cat .nvmrc}
-      #     echo "NODE_VERSION=$node_version" >> "$GITHUB_OUTPUT"
+        # id: nvm
+        # run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_OUTPUT
+
       - name: Read .nvmrc
         run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
         id: nvm

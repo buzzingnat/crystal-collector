@@ -148,8 +148,13 @@ const handleWindowApp = (isWindowed) => {
     mainWindow.setBounds({width: 800, height: 600 })
     mainWindow.center();
     mainWindow.setAutoHideMenuBar(false);
-    mainWindow.titleBarStyle = 'default';
-    mainWindow.titleBarOverlay = true;
+    mainWindow.titleBarStyle = 'hidden';
+    // mainWindow.titleBarOverlay = true;
+    mainWindow.titleBarOverlay = {
+      color: '#2f3241',
+      symbolColor: '#74b1be',
+      height: 60
+    }
   }
 };
 
