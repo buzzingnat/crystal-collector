@@ -134,8 +134,8 @@ const skipAnimations = {
 };
 const fullScreenButton = {
     getLabel(state) {
-        if (state.saved.fullScreen) return 'Fullscreen Off';
-        return 'Fullscreen On';
+        if (state.saved.fullScreen) return 'Fullscreen On';
+        return 'Fullscreen Off';
     },
     render: renderBasicButton,
     onClick(state) {

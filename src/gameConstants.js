@@ -18,15 +18,18 @@ const context = canvas.getContext('2d');
 context.imageSmoothingEnabled = false;
 document.body.appendChild(canvas);
 
+const MENU_BAR_HEIGHT = 32;
+
 let menuBar;
 if (window.electronAPI) {
     menuBar = document.createElement('div');
-    menuBar.style.width = window.outerWidth;
-    menuBar.style.height = 30;
+    //menuBar.style.width = window.outerWidth;
+    menuBar.style.left = '0px';
+    menuBar.style.right = '0px';
+    menuBar.style.height = `${MENU_BAR_HEIGHT}px`;
     menuBar.style.position = 'fixed';
-    menuBar.style.zIndex = 1000;
-    menuBar.style.top = 0;
-    menuBar.style.left = 0;
+    menuBar.style.zIndex = '1000';
+    menuBar.style.top = '0px';
     menuBar.style.background = '#888';
     menuBar.style.borderBottom = '1px #333 solid';
     menuBar.style.boxSizing = 'border-box';
@@ -51,4 +54,5 @@ module.exports = {
     COLOR_GOOD,
     COLOR_BAD,
     COLOR_CRYSTAL,
+    MENU_BAR_HEIGHT,
 };

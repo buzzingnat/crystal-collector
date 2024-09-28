@@ -1,5 +1,5 @@
 const {
-    canvas, context, menuBar, FRAME_LENGTH,
+    canvas, context, menuBar, FRAME_LENGTH, MENU_BAR_HEIGHT,
 } = require('gameConstants');
 
 const { preloadSounds } = require('sounds');
@@ -48,21 +48,16 @@ if (!savedState.saveSlots) {
 }
 window.savedState = savedState;
 
+
 function updateCanvasSize() {
-    let scale = window.innerWidth / 800;
-    if (scale <= 0.75) {
-        canvas.width = 600;
-        scale *= 4 / 3;
-    } else {
-        canvas.width = 800;
-    }
-    scale = Math.max(1, Math.floor(scale));
+    const scale = Math.max(1, Math.floor(window.innerWidth / 800));
     canvas.height = Math.max(300, Math.ceil(window.innerHeight / scale));
     if (window.electronAPI) {
-        canvas.height -= 15;
-        canvas.style.top = 30;
+        // Reduce the canvas height by the amount necessary for displaying the menu bar above it.
+        canvas.height = Math.ceil(canvas.height - MENU_BAR_HEIGHT / scale);
+        canvas.style.top = `${MENU_BAR_HEIGHT}px`;
     }
-    canvas.width = Math.ceil(window.innerWidth / scale);
+    canvas.width = Math.ceil(Math.max(400, window.innerWidth / scale));
     canvas.style.transformOrigin = '0 0'; //scale from top left
     canvas.style.transform = 'scale(' + scale + ')';
     canvas.scale = scale;
@@ -71,22 +66,18 @@ function updateCanvasSize() {
     context.imageSmoothingEnabled = false;
 }
 updateCanvasSize();
-// window.onresize = updateCanvasSize;
 
-function updateMenuSize() {
-    menuBar.style.width = window.innerWidth;
-    menuBar.style.height = 30;
+function updateMenuVisibility() {
     if (state && state.saved && state.saved.fullScreen === false) {
         menuBar.style.display = 'block';
-        menuBar.style.height = '30';
     } else {
         menuBar.style.display = 'none';
-        menuBar.style.height = '0';
+        //menuBar.style.height = '0';
     }
 }
-updateMenuSize();
+updateMenuVisibility();
 window.onresize = () => {
-    updateMenuSize();
+    updateMenuVisibility();
     updateCanvasSize();
 }
 
